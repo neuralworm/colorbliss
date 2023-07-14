@@ -34,10 +34,20 @@
 
     let middleColor: boolean = false;
 
-    let direction: string = "r"
+    let direction: string = "bg-gradient-to-r"
     let directionMap: Map<string, string> = new Map<string,string>([
-        ["r", "To Right"]
+        ["bg-gradient-to-r", "to right"],
+        ["bg-gradient-to-tr", "to top right"],
+        ["bg-gradient-to-br", "to bottom right"],
+        ["bg-gradient-to-l", "to left"],
+        ["bg-gradient-to-tl", "to top left"],
+        ["bg-gradient-to-bl", "to bottom left"],
+        ["bg-gradient-to-t", "to top"],
+        ["bg-gradient-to-b", "to bottom"],
     ])
+    const setDirection = (dirString: string) => {
+        direction = dirString
+    }
 
     type GradientTypes = "linear" | "radial" | "conic";
     let gradientType: string = "linear";
@@ -151,19 +161,18 @@
 
         <!-- LEFT DIRECTIONS -->
         <div id="left-directions" class="absolute -top-10 -bottom-10 -left-10 flex flex-col justify-between">
-            <DirectionButton direction={'tl'}></DirectionButton>
-            <DirectionButton direction={'l'}></DirectionButton>
-            <DirectionButton direction={'bl'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-tl'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-l'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-bl'}></DirectionButton>
 
         </div>
         <div id="left-directions" class="absolute -top-10 -bottom-10 -right-10 flex flex-col justify-between">
-            <DirectionButton direction={'tr'}></DirectionButton>
-            <DirectionButton direction={'r'}></DirectionButton>
-            <DirectionButton direction={'br'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-tr'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-r'}></DirectionButton>
+            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-br'}></DirectionButton>
 
         </div>
     </div>
-
     <div id="gradient-line" class="gradient-line mt-12 w-72">
         <div
             class="h-[2px] w-full rounded-lg"
