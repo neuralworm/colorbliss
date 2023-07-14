@@ -4,15 +4,34 @@
     import { setContext } from "svelte";
     // @ts-ignore
     import { toast, SvelteToast } from '@zerodevx/svelte-toast'
+    import {draggable} from 'svelte-drag'
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
-    let colorTwo: string = "#ff930f";
-    let colorThree: string = "#e81cff";
+    let colorTwo: string = "#e81cff";
+    let colorThree: string = "#ff930f";
+
+    // DRAG 
+    let dragOne: boolean = false
 
     let coordOne: number = 0;
     let coordTwo: number = 20;
     let coordThree: number = 100;
+
+    const setCoordOne = (offset: number) => {
+        coordOne = Math.floor((offset / 430) * 100)
+    }
+    const setCoordTwo = (offset: number) => {
+        coordTwo = Math.floor((offset / 430) * 100)
+    }
+    const setCoordThree = (offset: number) => {
+        coordThree = Math.floor((offset / 430) * 100)
+    }
+
+
+
+
+
 
     let middleColor: boolean = false;
 
@@ -23,7 +42,7 @@
 
     const setGradientType = (string: string) => {
         gradientType = string.toLowerCase();
-        styleString = getStyleString();
+        styleString = getStyleString(gradientType);
     };
     setContext("setGradientType", { setGradientType });
 
@@ -32,20 +51,20 @@
         // RADIAL
         if (gradientType == "radial")
             return `radial-gradient(${colorOne} ${coordOne}%, ${
-                middleColor ? colorTwo + " " + coordTwo + "%," : ""
-            } ${colorThree} ${coordThree}%`;
+                middleColor ? colorThree + " " + coordThree + "%," : ""
+            } ${colorTwo} ${coordTwo}%`;
 
         // LINEAR
         if (gradientType == "linear")
             return `linear-gradient(to right, ${colorOne} ${coordOne}%, ${
-                middleColor ? colorTwo + " " + coordTwo + "%," : ""
-            } ${colorThree} ${coordThree}%`;
+                middleColor ? colorThree + " " + coordThree + "%," : ""
+            } ${colorTwo} ${coordTwo}%`;
 
         // CONIC
         if (gradientType == "conic")
             return `conic-gradient(${colorOne} ${coordOne}%, ${
-                middleColor ? colorTwo + " " + coordTwo + "%," : ""
-            } ${colorThree} ${coordThree}%`;
+                middleColor ? colorThree + " " + coordThree + "%," : ""
+            } ${colorTwo} ${coordTwo}%`;
 
         // FALLBACK
         return ``;
@@ -78,6 +97,10 @@
     }
 
     $: styleString = getStyleString(gradientType);
+    $: coordOne ? styleString = getStyleString(gradientType) : null;
+    $: coordTwo ? styleString = getStyleString(gradientType) : null;
+
+
 
     // UTIL
     const getLength = () => {
@@ -136,21 +159,29 @@ CS
     </div>
     <div
         id="gradient-selectors"
-        class="w-72 flex flex-row justify-between mt-2 relative"
+        class="w-[470px] flex flex-row justify-between mt-2 relative"
     >
         <button
-            class="absolute rounded-md w-8 h-10 px-2"
+            use:draggable={{axis: 'x', bounds: 'parent', defaultPosition: {x: coordOne, y: 0}}}
+            on:svelte-drag={(e)=> setCoordOne(e.detail.offsetX)}
+            class="absolute rounded-md w-[40px] h-10 px-2"
             style="background-color: {colorOne};"
             style:transform={`translate3d(${coordOne}px, 0, 0)`}
         />
         <button
-            class="absolute rounded-md w-8 h-10 px-2"
-            style="background-color: {colorThree};"
-            style:transform={`translate3d(${coordThree}px, 0, 0)`}
+            use:draggable={{axis: 'x', bounds: 'parent', defaultPosition: {x: coordOne, y: 0}}}
+            on:svelte-drag={(e)=> setCoordTwo(e.detail.offsetX)}
+            class="absolute rounded-md w-[40px] h-10 px-2"
+            style="background-color: {colorTwo};"
+            style:transform={`translate3d(${coordTwo}px, 0, 0)`}
         />
         <!-- <div class="color-pickers">
             <ColorPicker bind:hex />
         </div> -->
+    </div>
+    <div id="third-color-toggle" class="mt-12 w-72 flex flex-row items-center justify-center">
+        <label for="third-color">Third Color</label>
+        <input type="checkbox" name="third-color" id="">
     </div>
     <div class="toast-wrapper">
 

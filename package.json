@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@zerodevx/svelte-toast": "^0.9.5"
+		"@zerodevx/svelte-toast": "^0.9.5",
+		"svelte-drag": "^3.1.0"
 	}
 }
