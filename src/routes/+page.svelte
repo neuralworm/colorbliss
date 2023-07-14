@@ -1,5 +1,6 @@
 <script>
     import Generator from "$lib/components/Generator.svelte";
+    import Examples from "$lib/components/layout/Examples.svelte";
 
 </script>
 <main>
@@ -11,7 +12,7 @@
     </section>
 
     <Generator></Generator>
-
+    <Examples></Examples>
 </main>
 
 
