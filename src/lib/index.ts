@@ -7,7 +7,6 @@ export const getWidth = (): number|undefined => {
 
 
 // COPY FUNCTIONS
-// For user to copy
 export const getTailwindBGString = (): string => {
     return `this`;
 };
@@ -29,6 +28,8 @@ export const copyToClipboard = (styleString: string) => {
         }
     })
 }
+
+// CSS STYLE BUILDERS
 export const getStyleStringOv = (gradientType: string, colorOne: string, colorTwo: string, colorThree: string|null = null, coordOne: number, coordTwo: number, coordThree: number|null = null, direction: string): string => {
     // RADIAL
     if (gradientType == "radial")
@@ -52,6 +53,8 @@ export const getStyleStringOv = (gradientType: string, colorOne: string, colorTw
     // FALLBACK
     return ``;
 };
+
+// TAILWIND CLASSES BUILDER
 
 // K: TAILWIND STRING, V: CSS STYLE VALUE
 let directionMap: Map<string, string> = new Map<string,string>([
