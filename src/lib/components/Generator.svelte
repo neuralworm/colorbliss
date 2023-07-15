@@ -5,7 +5,7 @@
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
     import { draggable } from "svelte-drag";
-    import { copyToClipboard, getStyleStringOv } from "$lib";
+    import { copyToClipboard, directionMap, getStyleStringOv } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
@@ -23,22 +23,22 @@
     let coordThree: number = 50;
 
     const setCoordOne = (offset: number) => {
-        coordOne = Math.floor((offset / 430) * 100);
+        coordOne = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
     };
     const setCoordTwo = (offset: number) => {
-        coordTwo = Math.floor((offset / 430) * 100);
+        coordTwo = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
     };
     const setCoordThree = (offset: number) => {
-        coordThree = Math.floor((offset / 430) * 100);
+        coordThree = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
     };
 
     let middleColor: boolean = false;
 
-    let direction: string = "bg-gradient-to-r"
-   
+    let direction: string = "bg-gradient-to-r";
+
     const setDirection = (dirString: string) => {
-        direction = dirString
-    }
+        direction = dirString;
+    };
 
     type GradientTypes = "linear" | "radial" | "conic";
     let gradientType: string = "linear";
@@ -88,7 +88,18 @@
     $: styleString = getStyleString(gradientType);
     $: coordOne ? (styleString = getStyleString(gradientType)) : null;
     $: coordTwo ? (styleString = getStyleString(gradientType)) : null;
-    $: direction ? (styleString = getStyleStringOv(gradientType, colorOne, colorTwo, middleColor ? colorThree : null,coordOne, coordTwo, middleColor ? coordThree : null, direction)) : null;
+    $: direction
+        ? (styleString = getStyleStringOv(
+              gradientType,
+              colorOne,
+              colorTwo,
+              middleColor ? colorThree : null,
+              coordOne,
+              coordTwo,
+              middleColor ? coordThree : null,
+              direction
+          ))
+        : null;
 
     // UTIL
     const getLength = () => {
@@ -96,21 +107,33 @@
         console.log(document.getElementById("gradient-line")?.scrollWidth);
         return document.getElementById("gradient-line")?.offsetWidth || 320;
     };
+
+    // DIRECTION MAP
+    const linearDirections: string[] = [
+        "bg-gradient-to-r",
+        "bg-gradient-to-tr",
+        "bg-gradient-to-br",
+        "bg-gradient-to-l",
+        "bg-gradient-to-tl",
+        "bg-gradient-to-bl",
+        "bg-gradient-to-t",
+        "bg-gradient-to-b",
+    ];
 </script>
 
 <section
     id="generator-wrapper"
     class="max-w-xl mx-auto flex items-center justify-center flex-col"
 >
-{styleString}
+    {styleString}
     <div
         id="top-row"
-        class="flex flex-row items-center justify-between w-72 mb-3"
+        class="flex flex-row items-center justify-center mb-3 gap-4"
     >
         <!-- GRADIENT TYPE SELECT -->
         <div
             id="gradient-type-select"
-            class="w-72 flex flex-row justify-between"
+            class="flex flex-row justify-between"
         >
             <select
                 name="gradient-type-select"
@@ -123,6 +146,17 @@
                 <option value="conic">Conic</option>
             </select>
         </div>
+        <!-- DIRECTION SELECT -->
+        <div id="gradient-direction-select">
+            <select name="" id="" class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10" bind:value={direction}>
+                {#each linearDirections as directionString}
+                    <option value={directionString}
+                        >{directionMap.get(directionString)}</option
+                    >
+                {/each}
+            </select>
+        </div>
+
         <!-- COPY BUTTONS -->
         <div id="copy-buttons" class="flex flex-row gap-2">
             <button
@@ -144,7 +178,7 @@
 
     <!-- MAIN DISPLAY -->
     <div
-        class="gradient-block-wrapper w-72 h-48 bg-white shadow-md rounded-xl relative mt-12"
+        class="gradient-block-wrapper w-72 h-48 bg-white shadow-md group rounded-xl gr relative mt-12"
     >
         <div
             id="gradient-color-canvas"
@@ -153,17 +187,45 @@
         />
 
         <!-- LEFT DIRECTIONS -->
-        <div id="left-directions" class="absolute -top-10 -bottom-10 -left-10 flex flex-col justify-between">
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-tl'}></DirectionButton>
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-l'}></DirectionButton>
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-bl'}></DirectionButton>
-
+        <div
+            id="left-directions"
+            class="absolute top-0 bottom-0 left-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between p-2"
+        >
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-tl"}
+            />
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-l"}
+            />
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-bl"}
+            />
         </div>
-        <div id="left-directions" class="absolute -top-10 -bottom-10 -right-10 flex flex-col justify-between">
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-tr'}></DirectionButton>
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-r'}></DirectionButton>
-            <DirectionButton currentDirection={direction}  setDirection={setDirection} direction={'bg-gradient-to-br'}></DirectionButton>
-
+        <div
+            id="left-directions"
+            class="absolute top-2 bottom-2 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between pr-2"
+        >
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-tr"}
+            />
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-r"}
+            />
+            <DirectionButton
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-br"}
+            />
         </div>
     </div>
     <div id="gradient-line" class="gradient-line mt-12 w-72">
@@ -233,6 +295,9 @@
         <label for="third-color">Third Color</label>
         <input type="checkbox" name="third-color" id="" />
     </div>
+    <div
+        class="w-72 h-72 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
+    />
     <div class="toast-wrapper">
         <SvelteToast />
     </div>

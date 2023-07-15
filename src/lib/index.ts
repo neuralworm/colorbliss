@@ -30,6 +30,10 @@ export const copyToClipboard = (styleString: string) => {
 }
 
 // CSS STYLE BUILDERS
+const linear_css_template = "linear-gradient(DIRECTION, COLOR_1, COLOR_2, COLOR_3"
+const radial_css_template = "radial-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_2, COLOR_3)"
+const conical_css_template = "conic-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_2, COLOR_3)"
+
 export const getStyleStringOv = (gradientType: string, colorOne: string, colorTwo: string, colorThree: string|null = null, coordOne: number, coordTwo: number, coordThree: number|null = null, direction: string): string => {
     // RADIAL
     if (gradientType == "radial")
@@ -55,9 +59,15 @@ export const getStyleStringOv = (gradientType: string, colorOne: string, colorTw
 };
 
 // TAILWIND CLASSES BUILDER
+const linear_tw_template = "DIRECTION from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
+const radial_tw_template = "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
+const conical_tw_template = "bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
+
+
+
 
 // K: TAILWIND STRING, V: CSS STYLE VALUE
-let directionMap: Map<string, string> = new Map<string,string>([
+export const directionMap: Map<string, string> = new Map<string,string>([
     ["bg-gradient-to-r", "to right"],
     ["bg-gradient-to-tr", "to top right"],
     ["bg-gradient-to-br", "to bottom right"],
