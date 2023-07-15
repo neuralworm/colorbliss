@@ -5,7 +5,7 @@
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
     import { draggable } from "svelte-drag";
-    import { copyToClipboard } from "$lib";
+    import { copyToClipboard, getStyleStringOv } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
@@ -35,16 +35,7 @@
     let middleColor: boolean = false;
 
     let direction: string = "bg-gradient-to-r"
-    let directionMap: Map<string, string> = new Map<string,string>([
-        ["bg-gradient-to-r", "to right"],
-        ["bg-gradient-to-tr", "to top right"],
-        ["bg-gradient-to-br", "to bottom right"],
-        ["bg-gradient-to-l", "to left"],
-        ["bg-gradient-to-tl", "to top left"],
-        ["bg-gradient-to-bl", "to bottom left"],
-        ["bg-gradient-to-t", "to top"],
-        ["bg-gradient-to-b", "to bottom"],
-    ])
+   
     const setDirection = (dirString: string) => {
         direction = dirString
     }
@@ -97,6 +88,7 @@
     $: styleString = getStyleString(gradientType);
     $: coordOne ? (styleString = getStyleString(gradientType)) : null;
     $: coordTwo ? (styleString = getStyleString(gradientType)) : null;
+    $: direction ? (styleString = getStyleStringOv(gradientType, colorOne, colorTwo, middleColor ? colorThree : null,coordOne, coordTwo, middleColor ? coordThree : null, direction)) : null;
 
     // UTIL
     const getLength = () => {
@@ -110,6 +102,7 @@
     id="generator-wrapper"
     class="max-w-xl mx-auto flex items-center justify-center flex-col"
 >
+{styleString}
     <div
         id="top-row"
         class="flex flex-row items-center justify-between w-72 mb-3"
