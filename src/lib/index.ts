@@ -35,6 +35,7 @@ const radial_css_template = "radial-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_
 const conical_css_template = "conic-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_2, COLOR_3)"
 
 export const getStyleStringOv = (gradientType: string, colorOne: string, colorTwo: string, colorThree: string|null = null, coordOne: number, coordTwo: number, coordThree: number|null = null, direction: string): string => {
+    let {color1, coord1, color2, coord2, color3, coord3} = reorder(colorOne, coordOne, colorTwo, coordTwo, colorThree, coordThree)
     // RADIAL
     if (gradientType == "radial")
         return `radial-gradient(${colorOne} ${coordOne}%, ${
@@ -57,7 +58,22 @@ export const getStyleStringOv = (gradientType: string, colorOne: string, colorTw
     // FALLBACK
     return ``;
 };
+type Position = [string, number] // [color, coord]
 
+const reorder = (colorOne: string, coordOne: number, colorTwo: string, coordTwo: number, colorThree: string|null, coordThree: number|null) => {
+    let array: Position[] = [[colorOne, coordOne], [colorTwo, coordTwo], [colorThree, coordThree]]
+    let ordered: Position[] = array.sort((a, b) => {
+        return a[1]-b[1]
+    })
+    return{
+        color1: ordered[0][0],
+        coord1: ordered[0][1],
+        color2: ordered[1][0],
+        coord2: ordered[1][1],
+        color3: ordered[2][0], 
+        coord3: ordered[2][1]
+    }
+}
 // TAILWIND CLASSES BUILDER
 const linear_tw_template = "DIRECTION from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
 const radial_tw_template = "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"

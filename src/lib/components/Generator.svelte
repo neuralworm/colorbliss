@@ -51,28 +51,45 @@
 
     // SET STATE OF CURRENTLY DISPLAYED GRADIENT AS NORMAL CSS STYLE (NOT TAILWINDS CLASSES)
     const getStyleString = (gradientType: string): string => {
+        let {color1, coord1, color2, coord2, color3, coord3} = reorder(colorOne, coordOne, colorTwo, coordTwo, colorThree, coordThree)
+        // console.log(color1, coord1, color2, coord2, color3, coord3)
         // RADIAL
         if (gradientType == "radial")
-            return `radial-gradient(${colorOne} ${coordOne}%, ${
-                middleColor ? colorThree + " " + coordThree + "%," : ""
-            } ${colorTwo} ${coordTwo}%`;
+            return `radial-gradient(${color1} ${coord1}%, ${
+                middleColor ? color3 + " " + coord3 + "%," : ""
+            } ${color2} ${coord2}%`;
 
         // LINEAR
         if (gradientType == "linear")
-            return `linear-gradient(to right, ${colorOne} ${coordOne}%, ${
-                middleColor ? colorThree + " " + coordThree + "%," : ""
-            } ${colorTwo} ${coordTwo}%`;
+            return `linear-gradient(to right, ${color1} ${coord1}%, ${
+                middleColor ? color3 + " " + coord3 + "%," : ""
+            } ${color2} ${coord2}%`;
 
         // CONIC
         if (gradientType == "conic")
-            return `conic-gradient(${colorOne} ${coordOne}%, ${
-                middleColor ? colorThree + " " + coordThree + "%," : ""
-            } ${colorTwo} ${coordTwo}%`;
+            return `conic-gradient(${color1} ${coord1}%, ${
+                middleColor ? color3 + " " + coord3 + "%," : ""
+            } ${color2} ${coord2}%`;
 
         // FALLBACK
         return ``;
     };
-
+    type Position = [string, number] // [color, coord]
+    // Reorders colors in ascending numeric order
+    const reorder = (colorOne: string, coordOne: number, colorTwo: string, coordTwo: number, colorThree: string, coordThree: number) => {
+        let array: Position[] = [[colorOne, coordOne], [colorTwo, coordTwo], [colorThree, coordThree]]
+        let ordered: Position[] = array.sort((a, b) => {
+            return a[1]-b[1]
+        })
+        return{
+            color1: ordered[0][0],
+            coord1: ordered[0][1],
+            color2: ordered[1][0],
+            coord2: ordered[1][1],
+            color3: ordered[2][0], 
+            coord3: ordered[2][1]
+        }
+    }
     const getConicString = () => {};
 
     // For user to copy
