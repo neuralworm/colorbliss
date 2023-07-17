@@ -23,13 +23,13 @@
     let coordThree: number = 50;
 
     const setCoordOne = (offset: number) => {
-        coordOne = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
+        coordOne = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
     const setCoordTwo = (offset: number) => {
-        coordTwo = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
+        coordTwo = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
     const setCoordThree = (offset: number) => {
-        coordThree = Math.ceil(Math.floor((offset / 430) * 100) / 5) * 5;
+        coordThree = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
 
     let middleColor: boolean = false;
@@ -119,10 +119,9 @@
         : null;
 
     // UTIL
-    const getLength = () => {
+    const getCanvasLength = () => {
         if (!document) return;
-        console.log(document.getElementById("gradient-line")?.scrollWidth);
-        return document.getElementById("gradient-line")?.offsetWidth || 320;
+        return document.getElementById("gradient-line")?.offsetWidth!;
     };
 
     // DIRECTION MAP
@@ -195,7 +194,7 @@
 
     <!-- MAIN DISPLAY -->
     <div
-        class="gradient-block-wrapper w-72 h-48 bg-white shadow-md group rounded-xl gr relative mt-12"
+        class="gradient-block-wrapper w-full mx-2 lg:mx-0 h-48 bg-white shadow-md group rounded-xl gr relative mt-12"
     >
         <div
             id="gradient-color-canvas"
@@ -245,7 +244,7 @@
             />
         </div>
     </div>
-    <div id="gradient-line" class="gradient-line mt-12 w-72">
+    <div id="gradient-line" class="gradient-line mt-12 w-full mx-2 lg:mx-0">
         <div
             class="h-[2px] w-full rounded-lg"
             style="background: {styleString}"
@@ -255,7 +254,7 @@
     <!-- COLOR HANDLE 1 -->
     <div
         id="gradient-selectors"
-        class="w-[470px] flex flex-row justify-between mt-2 relative"
+        class="w-full mx-2 lg:mx-0 flex flex-row justify-between mt-2 relative"
     >
         <button
             use:draggable={{
@@ -284,7 +283,7 @@
             use:draggable={{
                 axis: "x",
                 bounds: "parent",
-                defaultPosition: { x: (430 / coordTwo) * 100, y: 0 },
+                defaultPosition: { x: (getCanvasLength() / coordTwo) * 100, y: 0 },
             }}
             on:svelte-drag={(e) => setCoordTwo(e.detail.offsetX)}
             class="absolute flex items-center justify-center"
@@ -307,13 +306,13 @@
     </div>
     <div
         id="third-color-toggle"
-        class="mt-20 w-72 flex flex-row items-center justify-center"
+        class="mt-20 w-full mx-2 lg:mx-0 flex flex-row items-center justify-center"
     >
         <label for="third-color">Third Color</label>
         <input type="checkbox" name="third-color" id="" />
     </div>
     <div
-        class="w-72 h-72 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
+        class="w-full mx-2 lg:mx-0 h-72 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
     />
     <div class="toast-wrapper">
         <SvelteToast />
