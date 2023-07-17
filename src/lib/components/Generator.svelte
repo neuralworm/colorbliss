@@ -9,11 +9,20 @@
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
+    import CodeBlock from "./CodeBlock.svelte";
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
     let colorTwo: string = "#e81cff";
     let colorThree: string = "#ff930f";
+
+    // SELECTED OPTIONS
+    enum Color {
+        one,
+        two,
+        three,
+    }
+    let selected: Color = Color.one;
 
     // DRAG
     let dragOne: boolean = false;
@@ -22,17 +31,20 @@
     let coordTwo: number = 100;
     let coordThree: number = 50;
 
-    const setCoordOne = (offset: number) => {
+    const setCoordOne = () => {
+        let offset = getOffset('color-1-handle')
         coordOne =
-            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
-    const setCoordTwo = (offset: number) => {
+    const setCoordTwo = () => {
+        let offset = getOffset('color-2-handle')
         coordTwo =
-            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
-    const setCoordThree = (offset: number) => {
+    const setCoordThree = () => {
+        let offset = getOffset('color-3-handle')
         coordThree =
-            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
 
     let middleColor: boolean = false;
@@ -144,6 +156,16 @@
         if (!document) return;
         return document.getElementById("gradient-line")?.offsetWidth!;
     };
+    const getOffset = (handleID: string) => {
+        let el = document.getElementById(handleID)
+        let elOff = el?.getBoundingClientRect()
+        let canvasLength = getCanvasLength()
+        let line = document.getElementById('gradient-line')
+        let lineRect = line?.getBoundingClientRect()
+        let x = elOff!.left - lineRect!.left
+        return x
+        
+    }
 
     // DIRECTION MAP
     const linearDirections: string[] = [
@@ -166,7 +188,6 @@
         id="top-row"
         class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full"
     >
-       
         <!-- COPY BUTTONS -->
         <div id="copy-buttons" class="flex flex-row gap-2">
             <button
@@ -244,72 +265,71 @@
         id="gradient-options-wrapper"
         class="border-[1px] border-opacity-20 shadow-md border-white w-full mt-10 rounded-xl p-4 box-border"
     >
-        <div id="gradient-line" class="gradient-line mt-2 p-4 w-full lg:mx-0">
+        <div id="gradient-line" class="gradient-line mt-2  w-full lg:mx-0 relative">
             <div
-                class="h-[20px] w-full rounded-lg"
-                style="background: {styleString}"
+            id="gradient-track"
+                class="h-[20px] w-full rounded-sm absolute top-1/2"
+                style="background: {styleString}; transform: translate3d(0, -50%,0)"
             />
+            <!-- COLOR HANDLE 1 -->
+            <div
+                id="gradient-selectors"
+                class="w-full flex flex-row justify-between "
+            >
+                <button
+                id="color-1-handle"
+                    use:draggable={{
+                        axis: "x",
+                        bounds: "parent",
+                        defaultPosition: { x: coordOne, y: 0 },
+                    }}
+                    on:click={()=> selected = Color.one}
+                    on:svelte-drag={() => setCoordOne()}
+                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md"
+                >
+                    <div
+                        class="handle-body rounded-sm w-[20px] h-10 px-2"
+                        style="background-color: {colorOne};"
+                    />
+                    
+                </button>
+
+                <!-- COLOR HANDLE 2 -->
+                <button
+                id="color-2-handle"
+                    use:draggable={{
+                        axis: "x",
+                        bounds: "parent",
+                        defaultPosition: {
+                            x: (getCanvasLength() / coordTwo) * 100,
+                            y: 0,
+                        },
+                    }}
+                    on:click={()=> selected = Color.two}
+                    on:svelte-drag={() => setCoordTwo()}
+                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md"
+                >
+                    <div
+                        class="handle-body rounded-sm w-[20px] h-10 px-2"
+                        style="background-color: {colorTwo};;"
+                    />
+                  
+                </button>
+           
+            </div>
         </div>
 
-        <!-- COLOR HANDLE 1 -->
-        <div
-            id="gradient-selectors"
-            class="w-full mx-2 lg:mx-0 flex flex-row justify-between  relative"
-        >
-            <button
-                use:draggable={{
-                    axis: "x",
-                    bounds: "parent",
-                    defaultPosition: { x: coordOne, y: 0 },
-                }}
-                on:svelte-drag={(e) => setCoordOne(e.detail.offsetX)}
-                class="absolute flex items-center justify-center"
-            >
-                <div
-                    class="handle-body rounded-md w-[40px] h-10 px-2"
-                    style="background-color: {colorOne}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
-                />
-                <div class="slider-tab-position text-xs font-bold" />
-                <div
-                    class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
-                >
-                    {colorOne.substring(1).toUpperCase()}
-                    {coordOne}%
-                </div>
-            </button>
+        <!-- HANDLE SPECIFIC -->
+        <div class="mt-10">
+            {colorOne}
 
-            <!-- COLOR HANDLE 2 -->
-            <button
-                use:draggable={{
-                    axis: "x",
-                    bounds: "parent",
-                    defaultPosition: {
-                        x: (getCanvasLength() / coordTwo) * 100,
-                        y: 0,
-                    },
-                }}
-                on:svelte-drag={(e) => setCoordTwo(e.detail.offsetX)}
-                class="absolute flex items-center justify-center"
-            >
-                <div
-                    class="handle-body rounded-md w-[40px] h-10 px-2"
-                    style="background-color: {colorTwo}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
-                />
-                <div class="slider-tab-position text-xs font-bold" />
-                <div
-                    class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
-                >
-                    {colorTwo.substring(1).toUpperCase()}
-                    {coordTwo}%
-                </div>
-            </button>
-            <!-- <div class="color-pickers">
-                <ColorPicker bind:hex />
-            </div> -->
         </div>
 
         <!-- GRADIENT TYPE SELECT -->
-        <div id="gradient-type-select" class="flex flex-row justify-between mt-24">
+        <div
+            id="gradient-type-select"
+            class="flex flex-row justify-between mt-4"
+        >
             <select
                 name="gradient-type-select"
                 id=""
@@ -321,8 +341,8 @@
                 <option value="conic">Conic</option>
             </select>
         </div>
-         <!-- DIRECTION SELECT -->
-         <div id="gradient-direction-select" class="mt-4">
+        <!-- DIRECTION SELECT -->
+        <div id="gradient-direction-select" class="mt-4">
             <select
                 name=""
                 id=""
@@ -337,6 +357,9 @@
             </select>
         </div>
 
+        <div class="css-code mt-2">
+            <CodeBlock label={"CSS"} code={"background: " + styleString} />
+        </div>
     </div>
 
     <div
