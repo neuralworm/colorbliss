@@ -23,13 +23,16 @@
     let coordThree: number = 50;
 
     const setCoordOne = (offset: number) => {
-        coordOne = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+        coordOne =
+            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
     const setCoordTwo = (offset: number) => {
-        coordTwo = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+        coordTwo =
+            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
     const setCoordThree = (offset: number) => {
-        coordThree = Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
+        coordThree =
+            Math.ceil(Math.floor((offset / getCanvasLength()) * 100) / 5) * 5;
     };
 
     let middleColor: boolean = false;
@@ -51,7 +54,14 @@
 
     // SET STATE OF CURRENTLY DISPLAYED GRADIENT AS NORMAL CSS STYLE (NOT TAILWINDS CLASSES)
     const getStyleString = (gradientType: string): string => {
-        let {color1, coord1, color2, coord2, color3, coord3} = reorder(colorOne, coordOne, colorTwo, coordTwo, colorThree, coordThree)
+        let { color1, coord1, color2, coord2, color3, coord3 } = reorder(
+            colorOne,
+            coordOne,
+            colorTwo,
+            coordTwo,
+            colorThree,
+            coordThree
+        );
         // console.log(color1, coord1, color2, coord2, color3, coord3)
         // RADIAL
         if (gradientType == "radial")
@@ -74,22 +84,33 @@
         // FALLBACK
         return ``;
     };
-    type Position = [string, number] // [color, coord]
+    type Position = [string, number]; // [color, coord]
     // Reorders colors in ascending numeric order
-    const reorder = (colorOne: string, coordOne: number, colorTwo: string, coordTwo: number, colorThree: string, coordThree: number) => {
-        let array: Position[] = [[colorOne, coordOne], [colorTwo, coordTwo], [colorThree, coordThree]]
+    const reorder = (
+        colorOne: string,
+        coordOne: number,
+        colorTwo: string,
+        coordTwo: number,
+        colorThree: string,
+        coordThree: number
+    ) => {
+        let array: Position[] = [
+            [colorOne, coordOne],
+            [colorTwo, coordTwo],
+            [colorThree, coordThree],
+        ];
         let ordered: Position[] = array.sort((a, b) => {
-            return a[1]-b[1]
-        })
-        return{
+            return a[1] - b[1];
+        });
+        return {
             color1: ordered[0][0],
             coord1: ordered[0][1],
             color2: ordered[1][0],
             coord2: ordered[1][1],
-            color3: ordered[2][0], 
-            coord3: ordered[2][1]
-        }
-    }
+            color3: ordered[2][0],
+            coord3: ordered[2][1],
+        };
+    };
     const getConicString = () => {};
 
     // For user to copy
@@ -139,40 +160,13 @@
 
 <section
     id="generator-wrapper"
-    class="max-w-xl mx-auto flex items-center justify-center flex-col"
+    class="max-w-xl mx-auto flex items-center justify-center flex-col px-4"
 >
-    {styleString}
     <div
         id="top-row"
-        class="flex flex-row items-center justify-center mb-3 gap-4"
+        class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full"
     >
-        <!-- GRADIENT TYPE SELECT -->
-        <div
-            id="gradient-type-select"
-            class="flex flex-row justify-between"
-        >
-            <select
-                name="gradient-type-select"
-                id=""
-                bind:value={gradientType}
-                class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10"
-            >
-                <option value="linear">Linear</option>
-                <option value="radial">Radial</option>
-                <option value="conic">Conic</option>
-            </select>
-        </div>
-        <!-- DIRECTION SELECT -->
-        <div id="gradient-direction-select">
-            <select name="" id="" class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10" bind:value={direction}>
-                {#each linearDirections as directionString}
-                    <option value={directionString}
-                        >{directionMap.get(directionString)}</option
-                    >
-                {/each}
-            </select>
-        </div>
-
+       
         <!-- COPY BUTTONS -->
         <div id="copy-buttons" class="flex flex-row gap-2">
             <button
@@ -194,7 +188,7 @@
 
     <!-- MAIN DISPLAY -->
     <div
-        class="gradient-block-wrapper w-full mx-2 lg:mx-0 h-48 bg-white shadow-md group rounded-xl gr relative mt-12"
+        class="gradient-block-wrapper w-full mx-2 lg:mx-0 h-48 bg-white shadow-md group rounded-xl gr relative mt-4"
     >
         <div
             id="gradient-color-canvas"
@@ -244,66 +238,107 @@
             />
         </div>
     </div>
-    <div id="gradient-line" class="gradient-line mt-12 w-full mx-2 lg:mx-0">
-        <div
-            class="h-[2px] w-full rounded-lg"
-            style="background: {styleString}"
-        />
-    </div>
 
-    <!-- COLOR HANDLE 1 -->
+    <!-- OPTION CARD -->
     <div
-        id="gradient-selectors"
-        class="w-full mx-2 lg:mx-0 flex flex-row justify-between mt-2 relative"
+        id="gradient-options-wrapper"
+        class="border-[1px] border-opacity-20 shadow-md border-white w-full mt-10 rounded-xl p-4 box-border"
     >
-        <button
-            use:draggable={{
-                axis: "x",
-                bounds: "parent",
-                defaultPosition: { x: coordOne, y: 0 },
-            }}
-            on:svelte-drag={(e) => setCoordOne(e.detail.offsetX)}
-            class="absolute flex items-center justify-center"
-        >
+        <div id="gradient-line" class="gradient-line mt-2 p-4 w-full lg:mx-0">
             <div
-                class="handle-body rounded-md w-[40px] h-10 px-2"
-                style="background-color: {colorOne}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
+                class="h-[20px] w-full rounded-lg"
+                style="background: {styleString}"
             />
-            <div class="slider-tab-position text-xs font-bold" />
-            <div
-                class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
-            >
-                {colorOne.substring(1).toUpperCase()}
-                {coordOne}%
-            </div>
-        </button>
+        </div>
 
-        <!-- COLOR HANDLE 2 -->
-        <button
-            use:draggable={{
-                axis: "x",
-                bounds: "parent",
-                defaultPosition: { x: (getCanvasLength() / coordTwo) * 100, y: 0 },
-            }}
-            on:svelte-drag={(e) => setCoordTwo(e.detail.offsetX)}
-            class="absolute flex items-center justify-center"
+        <!-- COLOR HANDLE 1 -->
+        <div
+            id="gradient-selectors"
+            class="w-full mx-2 lg:mx-0 flex flex-row justify-between  relative"
         >
-            <div
-                class="handle-body rounded-md w-[40px] h-10 px-2"
-                style="background-color: {colorTwo}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
-            />
-            <div class="slider-tab-position text-xs font-bold" />
-            <div
-                class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
+            <button
+                use:draggable={{
+                    axis: "x",
+                    bounds: "parent",
+                    defaultPosition: { x: coordOne, y: 0 },
+                }}
+                on:svelte-drag={(e) => setCoordOne(e.detail.offsetX)}
+                class="absolute flex items-center justify-center"
             >
-                {colorTwo.substring(1).toUpperCase()}
-                {coordTwo}%
-            </div>
-        </button>
-        <!-- <div class="color-pickers">
-            <ColorPicker bind:hex />
-        </div> -->
+                <div
+                    class="handle-body rounded-md w-[40px] h-10 px-2"
+                    style="background-color: {colorOne}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
+                />
+                <div class="slider-tab-position text-xs font-bold" />
+                <div
+                    class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
+                >
+                    {colorOne.substring(1).toUpperCase()}
+                    {coordOne}%
+                </div>
+            </button>
+
+            <!-- COLOR HANDLE 2 -->
+            <button
+                use:draggable={{
+                    axis: "x",
+                    bounds: "parent",
+                    defaultPosition: {
+                        x: (getCanvasLength() / coordTwo) * 100,
+                        y: 0,
+                    },
+                }}
+                on:svelte-drag={(e) => setCoordTwo(e.detail.offsetX)}
+                class="absolute flex items-center justify-center"
+            >
+                <div
+                    class="handle-body rounded-md w-[40px] h-10 px-2"
+                    style="background-color: {colorTwo}; clip-path: polygon(50% 0%, 100% 44%, 100% 100%, 0% 100%, 0% 44%);"
+                />
+                <div class="slider-tab-position text-xs font-bold" />
+                <div
+                    class="absolute -bottom-10 left-0 right-0 flex items-center justify-center font-bold text-sm"
+                >
+                    {colorTwo.substring(1).toUpperCase()}
+                    {coordTwo}%
+                </div>
+            </button>
+            <!-- <div class="color-pickers">
+                <ColorPicker bind:hex />
+            </div> -->
+        </div>
+
+        <!-- GRADIENT TYPE SELECT -->
+        <div id="gradient-type-select" class="flex flex-row justify-between mt-24">
+            <select
+                name="gradient-type-select"
+                id=""
+                bind:value={gradientType}
+                class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10 w-full"
+            >
+                <option value="linear">Linear</option>
+                <option value="radial">Radial</option>
+                <option value="conic">Conic</option>
+            </select>
+        </div>
+         <!-- DIRECTION SELECT -->
+         <div id="gradient-direction-select" class="mt-4">
+            <select
+                name=""
+                id=""
+                class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10 w-full"
+                bind:value={direction}
+            >
+                {#each linearDirections as directionString}
+                    <option value={directionString}
+                        >{directionMap.get(directionString)}</option
+                    >
+                {/each}
+            </select>
+        </div>
+
     </div>
+
     <div
         id="third-color-toggle"
         class="mt-20 w-full mx-2 lg:mx-0 flex flex-row items-center justify-center"
