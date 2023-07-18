@@ -289,6 +289,20 @@
                 direction={"bg-gradient-to-br"}
             />
         </div>
+        <div id="top-direction" class="absolute top-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pt-2">
+            <DirectionButton
+            currentDirection={direction}
+            {setDirection}
+            direction={"bg-gradient-to-t"}
+        />
+        </div>
+        <div id="bottom-direction" class="absolute bottom-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pb-2">
+            <DirectionButton
+            currentDirection={direction}
+            {setDirection}
+            direction={"bg-gradient-to-b"}
+        />
+        </div>
     </div>
 
     <!-- OPTION CARD -->
