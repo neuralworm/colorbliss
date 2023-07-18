@@ -40,25 +40,31 @@ export const getStyleStringOv = (gradientType: string, colorOne: string, colorTw
     if (gradientType == "radial")
         return `radial-gradient(${colorOne} ${coordOne}%, ${
             colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%`;
+        } ${colorTwo} ${coordTwo}%)`;
 
     // LINEAR
     if (gradientType == "linear")
         
         return `linear-gradient(${directionMap.get(direction)}, ${colorOne} ${coordOne}%, ${
             colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%`;
+        } ${colorTwo} ${coordTwo}%)`;
 
     // CONIC
     if (gradientType == "conic")
         return `conic-gradient(${colorOne} ${coordOne}%, ${
             colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%`;
+        } ${colorTwo} ${coordTwo}%)`;
 
     // FALLBACK
     return ``;
 };
 type Position = [string, number] // [color, coord]
+
+export const getGradientLineStyle = (colorOne: string, colorTwo: string, colorThree: string, coordOne: number, coordTwo: number, coordThree: number, middle: boolean) => {
+    return `linear-gradient(to right, ${colorOne} ${coordOne}%, ${
+        middle ? colorThree + " " + coordThree + "%," : ""
+    } ${colorTwo} ${coordTwo}%)`;
+}
 
 const reorder = (colorOne: string, coordOne: number, colorTwo: string, coordTwo: number, colorThree: string|null, coordThree: number|null) => {
     let array: Position[] = [[colorOne, coordOne], [colorTwo, coordTwo], [colorThree, coordThree]]

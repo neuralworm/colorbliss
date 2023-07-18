@@ -5,24 +5,20 @@
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
     import { draggable } from "svelte-drag";
-    import { copyToClipboard, directionMap, getStyleStringOv } from "$lib";
+    import { copyToClipboard, directionMap, getGradientLineStyle, getStyleStringOv } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
     import CodeBlock from "./CodeBlock.svelte";
+    import ColorButton from "./ColorButton.svelte";
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
     let colorTwo: string = "#e81cff";
     let colorThree: string = "#ff930f";
 
-    // SELECTED OPTIONS
-    enum Color {
-        one,
-        two,
-        three,
-    }
-    let selected: Color = Color.one;
+  
+    let selected: number = 1
 
     // DRAG
     let dragOne: boolean = false;
@@ -150,6 +146,7 @@
               direction
           ))
         : null;
+    $: lineGradientString = getGradientLineStyle(colorOne, colorTwo, colorThree, coordOne, coordTwo, coordThree, middleColor)
 
     // UTIL
     const getCanvasLength = () => {
@@ -263,19 +260,21 @@
     <!-- OPTION CARD -->
     <div
         id="gradient-options-wrapper"
-        class="border-[1px] border-opacity-20 shadow-md border-white w-full mt-10 rounded-xl p-4 box-border"
+        class="border-[1px] border-opacity-20 shadow-md border-white w-full bg-indigo-900 bg-opacity-30 mt-10 rounded-xl p-4 box-border"
     >
         <div id="gradient-line" class="gradient-line mt-2  w-full lg:mx-0 relative">
             <div
             id="gradient-track"
                 class="h-[20px] w-full rounded-sm absolute top-1/2"
-                style="background: {styleString}; transform: translate3d(0, -50%,0)"
+                style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
             />
-            <!-- COLOR HANDLE 1 -->
+
             <div
-                id="gradient-selectors"
-                class="w-full flex flex-row justify-between "
+            id="gradient-selectors"
+            class="w-full flex flex-row justify-between "
             >
+            
+            <!-- COLOR HANDLE 1 -->
                 <button
                 id="color-1-handle"
                     use:draggable={{
@@ -283,12 +282,13 @@
                         bounds: "parent",
                         defaultPosition: { x: coordOne, y: 0 },
                     }}
-                    on:click={()=> selected = Color.one}
+                    on:click={()=> selected = 1}
                     on:svelte-drag={() => setCoordOne()}
-                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md"
+                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                    class:border-white={selected == 1}
                 >
                     <div
-                        class="handle-body rounded-sm w-[20px] h-10 px-2"
+                        class="handle-body rounded-sm w-[20px] h-6 px-2"
                         style="background-color: {colorOne};"
                     />
                     
@@ -305,12 +305,13 @@
                             y: 0,
                         },
                     }}
-                    on:click={()=> selected = Color.two}
+                    on:click={()=> selected = 2}
                     on:svelte-drag={() => setCoordTwo()}
-                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md"
+                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                    class:border-white={selected == 2}
                 >
                     <div
-                        class="handle-body rounded-sm w-[20px] h-10 px-2"
+                        class="handle-body rounded-sm w-[20px] h-6 px-2"
                         style="background-color: {colorTwo};;"
                     />
                   
@@ -321,8 +322,7 @@
 
         <!-- HANDLE SPECIFIC -->
         <div class="mt-10">
-            {colorOne}
-
+            <ColorButton selected={selected} labelString={"Color"} color={selected == 1 ? colorOne : colorTwo} />
         </div>
 
         <!-- GRADIENT TYPE SELECT -->
@@ -357,8 +357,10 @@
             </select>
         </div>
 
-        <div class="css-code mt-2">
+        <div class="css-code mt-4 gap-2 flex flex-col">
             <CodeBlock label={"CSS"} code={"background: " + styleString} />
+            <CodeBlock label={"TW"} code={"background: " + getTailwindBGString()} />
+
         </div>
     </div>
 
@@ -369,9 +371,9 @@
         <label for="third-color">Third Color</label>
         <input type="checkbox" name="third-color" id="" />
     </div>
-    <div
+    <!-- <div
         class="w-full mx-2 lg:mx-0 h-72 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
-    />
+    /> -->
     <div class="toast-wrapper">
         <SvelteToast />
     </div>
