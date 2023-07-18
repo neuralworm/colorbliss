@@ -5,20 +5,25 @@
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
     import { draggable } from "svelte-drag";
-    import { copyToClipboard, directionMap, getGradientLineStyle, getStyleStringOv } from "$lib";
+    import {
+        copyToClipboard,
+        directionMap,
+        getGradientLineStyle,
+        getStyleStringOv,
+    } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
     import CodeBlock from "./CodeBlock.svelte";
     import ColorButton from "./ColorButton.svelte";
-
+    import { validateHTMLColorHex } from "validate-color";
+    import CPickerWrapper from "./CPickerWrapper.svelte";
     // COLOR STATE
     let colorOne: string = "#40c9ff";
     let colorTwo: string = "#e81cff";
     let colorThree: string = "#ff930f";
 
-  
-    let selected: number = 1
+    let selected: number = 1;
 
     // DRAG
     let dragOne: boolean = false;
@@ -27,18 +32,20 @@
     let coordTwo: number = 100;
     let coordThree: number = 50;
 
+    let picker: boolean = false;
+
     const setCoordOne = () => {
-        let offset = getOffset('color-1-handle')
+        let offset = getOffset("color-1-handle");
         coordOne =
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
     const setCoordTwo = () => {
-        let offset = getOffset('color-2-handle')
+        let offset = getOffset("color-2-handle");
         coordTwo =
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
     const setCoordThree = () => {
-        let offset = getOffset('color-3-handle')
+        let offset = getOffset("color-3-handle");
         coordThree =
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
@@ -146,7 +153,15 @@
               direction
           ))
         : null;
-    $: lineGradientString = getGradientLineStyle(colorOne, colorTwo, colorThree, coordOne, coordTwo, coordThree, middleColor)
+    $: lineGradientString = getGradientLineStyle(
+        colorOne,
+        colorTwo,
+        colorThree,
+        coordOne,
+        coordTwo,
+        coordThree,
+        middleColor
+    );
 
     // UTIL
     const getCanvasLength = () => {
@@ -154,15 +169,34 @@
         return document.getElementById("gradient-line")?.offsetWidth!;
     };
     const getOffset = (handleID: string) => {
-        let el = document.getElementById(handleID)
-        let elOff = el?.getBoundingClientRect()
-        let canvasLength = getCanvasLength()
-        let line = document.getElementById('gradient-line')
-        let lineRect = line?.getBoundingClientRect()
-        let x = elOff!.left - lineRect!.left
-        return x
-        
-    }
+        let el = document.getElementById(handleID);
+        let elOff = el?.getBoundingClientRect();
+        let canvasLength = getCanvasLength();
+        let line = document.getElementById("gradient-line");
+        let lineRect = line?.getBoundingClientRect();
+        let x = elOff!.left - lineRect!.left;
+        return x;
+    };
+    const setColorFromInput = (hexString: string, slot: number) => {
+        console.log("Setting color", hexString);
+        let valid = validateHTMLColorHex(hexString);
+        console.log(valid);
+        if (validateHTMLColorHex(hexString)) {
+            switch (slot) {
+                case 1:
+                    colorOne = valid ? hexString : colorOne;
+                    return;
+                case 2:
+                    colorTwo = valid ? hexString : colorTwo;
+                    return;
+                case 3:
+                    colorThree = valid ? hexString : colorThree;
+                    return;
+                default:
+                    return;
+            }
+        }
+    };
 
     // DIRECTION MAP
     const linearDirections: string[] = [
@@ -262,27 +296,29 @@
         id="gradient-options-wrapper"
         class="border-[1px] border-opacity-20 shadow-md border-white w-full bg-indigo-900 bg-opacity-30 mt-10 rounded-xl p-4 box-border"
     >
-        <div id="gradient-line" class="gradient-line mt-2  w-full lg:mx-0 relative">
+        <div
+            id="gradient-line"
+            class="gradient-line mt-2 w-full lg:mx-0 relative"
+        >
             <div
-            id="gradient-track"
+                id="gradient-track"
                 class="h-[20px] w-full rounded-sm absolute top-1/2"
                 style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
             />
 
             <div
-            id="gradient-selectors"
-            class="w-full flex flex-row justify-between "
+                id="gradient-selectors"
+                class="w-full flex flex-row justify-between"
             >
-            
-            <!-- COLOR HANDLE 1 -->
+                <!-- COLOR HANDLE 1 -->
                 <button
-                id="color-1-handle"
+                    id="color-1-handle"
                     use:draggable={{
                         axis: "x",
                         bounds: "parent",
                         defaultPosition: { x: coordOne, y: 0 },
                     }}
-                    on:click={()=> selected = 1}
+                    on:click={() => (selected = 1)}
                     on:svelte-drag={() => setCoordOne()}
                     class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
                     class:border-white={selected == 1}
@@ -291,12 +327,11 @@
                         class="handle-body rounded-sm w-[20px] h-6 px-2"
                         style="background-color: {colorOne};"
                     />
-                    
                 </button>
 
                 <!-- COLOR HANDLE 2 -->
                 <button
-                id="color-2-handle"
+                    id="color-2-handle"
                     use:draggable={{
                         axis: "x",
                         bounds: "parent",
@@ -305,7 +340,7 @@
                             y: 0,
                         },
                     }}
-                    on:click={()=> selected = 2}
+                    on:click={() => (selected = 2)}
                     on:svelte-drag={() => setCoordTwo()}
                     class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
                     class:border-white={selected == 2}
@@ -314,17 +349,34 @@
                         class="handle-body rounded-sm w-[20px] h-6 px-2"
                         style="background-color: {colorTwo};;"
                     />
-                  
                 </button>
-           
             </div>
         </div>
 
         <!-- HANDLE SPECIFIC -->
         <div class="mt-10">
-            <ColorButton selected={selected} labelString={"Color"} color={selected == 1 ? colorOne : colorTwo} />
+            <ColorButton
+                openPicker={() => (picker = !picker)}
+                setColor={setColorFromInput}
+                {selected}
+                labelString={"Color"}
+                color={selected == 1 ? colorOne : colorTwo}
+            />
         </div>
-
+        {#if picker}
+            <ColorPicker
+            
+            isInput={false}
+            isOpen={picker}
+                hex={selected == 1
+                    ? colorOne
+                    : selected == 2
+                    ? colorTwo
+                    : colorThree}
+            components={{wrapper: CPickerWrapper}}
+            on:input={(e)=> setColorFromInput(e.detail.hex, selected)}
+            />
+        {/if}
         <!-- GRADIENT TYPE SELECT -->
         <div
             id="gradient-type-select"
@@ -359,8 +411,10 @@
 
         <div class="css-code mt-4 gap-2 flex flex-col">
             <CodeBlock label={"CSS"} code={"background: " + styleString} />
-            <CodeBlock label={"TW"} code={"background: " + getTailwindBGString()} />
-
+            <CodeBlock
+                label={"TW"}
+                code={"background: " + getTailwindBGString()}
+            />
         </div>
     </div>
 
