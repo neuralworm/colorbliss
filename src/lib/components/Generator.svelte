@@ -18,6 +18,7 @@
     import ColorButton from "./ColorButton.svelte";
     import { validateHTMLColorHex } from "validate-color";
     import CPickerWrapper from "./CPickerWrapper.svelte";
+    import AddColorButton from "./AddColorButton.svelte";
     // COLOR STATE
     let colorOne: string = "#40c9ff";
     let colorTwo: string = "#e81cff";
@@ -289,19 +290,25 @@
                 direction={"bg-gradient-to-br"}
             />
         </div>
-        <div id="top-direction" class="absolute top-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pt-2">
+        <div
+            id="top-direction"
+            class="absolute top-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pt-2"
+        >
             <DirectionButton
-            currentDirection={direction}
-            {setDirection}
-            direction={"bg-gradient-to-t"}
-        />
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-t"}
+            />
         </div>
-        <div id="bottom-direction" class="absolute bottom-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pb-2">
+        <div
+            id="bottom-direction"
+            class="absolute bottom-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pb-2"
+        >
             <DirectionButton
-            currentDirection={direction}
-            {setDirection}
-            direction={"bg-gradient-to-b"}
-        />
+                currentDirection={direction}
+                {setDirection}
+                direction={"bg-gradient-to-b"}
+            />
         </div>
     </div>
 
@@ -361,10 +368,38 @@
                 >
                     <div
                         class="handle-body rounded-sm w-[20px] h-6 px-2"
-                        style="background-color: {colorTwo};;"
+                        style="background-color: {colorTwo};"
                     />
                 </button>
+
+                {#if middleColor}
+                    <!-- COLOR HANDLE 3 -->
+                    <button
+                        id="color-3-handle"
+                        use:draggable={{
+                            axis: "x",
+                            bounds: "parent",
+                            defaultPosition: {
+                                x: (getCanvasLength() / coordThree) * 100,
+                                y: 0,
+                            },
+                        }}
+                        on:click={() => (selected = 3)}
+                        on:svelte-drag={() => setCoordThree()}
+                        class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                        class:border-white={selected == 3}
+                    >
+                        <div
+                            class="handle-body rounded-sm w-[20px] h-6 px-2"
+                            style="background-color: {colorThree};"
+                        />
+                    </button>
+                {/if}
             </div>
+
+            {#if !middleColor}
+                <AddColorButton addThird={() => (middleColor = true)} />
+            {/if}
         </div>
 
         <!-- HANDLE SPECIFIC -->
@@ -377,18 +412,22 @@
                 color={selected == 1 ? colorOne : colorTwo}
             />
         </div>
+        {#if middleColor && selected == 3}
+            <button class="" on:click={() => (middleColor = false)}>
+                DELETE
+            </button>
+        {/if}
         {#if picker}
             <ColorPicker
-            
-            isInput={false}
-            isOpen={picker}
+                isInput={false}
+                isOpen={picker}
                 hex={selected == 1
                     ? colorOne
                     : selected == 2
                     ? colorTwo
                     : colorThree}
-            components={{wrapper: CPickerWrapper}}
-            on:input={(e)=> setColorFromInput(e.detail.hex, selected)}
+                components={{ wrapper: CPickerWrapper }}
+                on:input={(e) => setColorFromInput(e.detail.hex, selected)}
             />
         {/if}
         <!-- GRADIENT TYPE SELECT -->
@@ -426,22 +465,13 @@
         <div class="css-code mt-4 gap-2 flex flex-col">
             <CodeBlock label={"CSS"} code={"background: " + styleString} />
             <CodeBlock
-                label={"TW"}
+                label={"TAILWIND CSS"}
                 code={"background: " + getTailwindBGString()}
             />
         </div>
     </div>
 
-    <div
-        id="third-color-toggle"
-        class="mt-20 w-full mx-2 lg:mx-0 flex flex-row items-center justify-center"
-    >
-        <label for="third-color">Third Color</label>
-        <input type="checkbox" name="third-color" id="" />
-    </div>
-    <!-- <div
-        class="w-full mx-2 lg:mx-0 h-72 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
-    /> -->
+  
     <div class="toast-wrapper">
         <SvelteToast />
     </div>
