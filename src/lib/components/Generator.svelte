@@ -142,6 +142,7 @@
     $: styleString = getStyleString(gradientType);
     $: coordOne ? (styleString = getStyleString(gradientType)) : null;
     $: coordTwo ? (styleString = getStyleString(gradientType)) : null;
+    $: coordThree ? (styleString = getStyleString(gradientType)) : null;
     $: direction
         ? (styleString = getStyleStringOv(
               gradientType,
@@ -365,7 +366,7 @@
                     on:svelte-drag={() => setCoordTwo()}
                     class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
                     class:border-white={selected == 2}
-                >
+                >{coordTwo}
                     <div
                         class="handle-body rounded-sm w-[20px] h-6 px-2"
                         style="background-color: {colorTwo};"
@@ -388,7 +389,7 @@
                         on:svelte-drag={() => setCoordThree()}
                         class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
                         class:border-white={selected == 3}
-                    >
+                    >{coordThree}
                         <div
                             class="handle-body rounded-sm w-[20px] h-6 px-2"
                             style="background-color: {colorThree};"

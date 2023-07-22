@@ -99,3 +99,18 @@ export const directionMap: Map<string, string> = new Map<string,string>([
     ["bg-gradient-to-t", "to top"],
     ["bg-gradient-to-b", "to bottom"],
 ])
+
+
+// RANDOM
+const randomizeGradient = () => {
+    
+}
+const getRandomHex = (): string => {
+    let r: number = getRandom8bit()
+    let g: number = getRandom8bit()
+    let b: number = getRandom8bit()
+    return r.toString(16).padStart(2, "0") + g.toString(16).padStart(2, "0") + b.toString(16).padStart(2, "0")
+}
+const getRandom8bit = () => {
+    return Math.floor(Math.random() * 256)
+}
