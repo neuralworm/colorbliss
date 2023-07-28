@@ -16,6 +16,6 @@
     ])
 </script>
 
-<button class="w-8 h-8 rounded-lg bg-indigo-800 hover:opacity-60 shadow-md flex items-center justify-center" on:click={()=>setDirection(direction)} class:opacity-50={direction == currentDirection}>
+<button class="w-8 h-8 rounded-lg bg-indigo-500 hover:opacity-60 shadow-md flex items-center justify-center" on:click={()=>setDirection(direction)} class:opacity-50={direction == currentDirection}>
     <img src={chevron} class="invert h-4  {directionMap.get(direction)}" alt="">
 </button>

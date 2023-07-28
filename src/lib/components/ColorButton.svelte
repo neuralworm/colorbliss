@@ -7,7 +7,7 @@
 </script>
 
 <div
-    class="w-full bg-indigo-900 rounded-md flex flex-row items-center justify-between p-2"
+    class="w-full border-[2px] rounded-md flex flex-row items-center justify-between p-2"
 >
     <input
         on:submit={(e) => setColor(e.target.value, selected)}

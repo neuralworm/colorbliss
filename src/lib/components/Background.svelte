@@ -1,0 +1,1 @@
+<h1 class="absolute top-[160px] left-[300px]  text-3xl md:text-9xl tracking-tighter font-extrabold text-transparent bg-clip-text  bg-gradient-to-br from-[#2de9ef] to-[#1cff8e] -z-10 opacity-60">COLORWIND</h1>

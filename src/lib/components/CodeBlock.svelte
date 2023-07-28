@@ -5,12 +5,12 @@
 
 </script>
 
-<div class="bg-black bg-opacity-20 flex justify-center p-4 flex-col rounded-lg shadow-md group hover:opacity-70 cursor-pointer relative">
+<div class="bg-[#058881] bg-opacity-10 flex justify-center p-4 flex-col rounded-lg shadow-md group hover:opacity-70 cursor-pointer relative">
     <label for="" class="text-xs opacity-50">{label}</label>
     <code class="mt-2">
         {code}
     </code>
-    <div class="overlay absolute top-0  right-0 bottom-0 flex items-center justify-center opacity-0 group-hover:opacity-100 invert p-2">
+    <div class="overlay absolute top-0  right-0 bottom-0 flex items-center justify-center opacity-0 group-hover:opacity-100  p-2">
         <img src={copy} width={32} alt="">
     </div>
 </div>

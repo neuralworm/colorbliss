@@ -51,6 +51,11 @@
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
 
+    // DRAG API
+    const draggingOne = (e: DragEvent) => {
+        console.log(e);
+    };
+
     let middleColor: boolean = false;
 
     let direction: string = "bg-gradient-to-r";
@@ -215,7 +220,7 @@
 
 <section
     id="generator-wrapper"
-    class="max-w-xl mx-auto flex items-center justify-center flex-col px-4"
+    class="mx-auto flex items-center justify-center flex-col px-4 container max-w-5xl"
 >
     <div
         id="top-row"
@@ -241,238 +246,241 @@
     <!-- {styleString} -->
 
     <!-- MAIN DISPLAY -->
-    <div
-        class="gradient-block-wrapper w-full mx-2 lg:mx-0 h-48 bg-white shadow-md group rounded-xl gr relative mt-4"
-    >
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
         <div
-            id="gradient-color-canvas"
-            class="absolute shadow-md rounded-xl top-0 bottom-0 left-0 right-0"
-            style="background: {styleString}"
-        />
-
-        <!-- LEFT DIRECTIONS -->
-        <div
-            id="left-directions"
-            class="absolute top-0 bottom-0 left-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between p-2"
-        >
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-tl"}
-            />
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-l"}
-            />
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-bl"}
-            />
-        </div>
-        <div
-            id="left-directions"
-            class="absolute top-2 bottom-2 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between pr-2"
-        >
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-tr"}
-            />
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-r"}
-            />
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-br"}
-            />
-        </div>
-        <div
-            id="top-direction"
-            class="absolute top-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pt-2"
-        >
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-t"}
-            />
-        </div>
-        <div
-            id="bottom-direction"
-            class="absolute bottom-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pb-2"
-        >
-            <DirectionButton
-                currentDirection={direction}
-                {setDirection}
-                direction={"bg-gradient-to-b"}
-            />
-        </div>
-    </div>
-
-    <!-- OPTION CARD -->
-    <div
-        id="gradient-options-wrapper"
-        class="border-[1px] border-opacity-20 shadow-md border-white w-full bg-indigo-900 bg-opacity-30 mt-10 rounded-xl p-4 box-border"
-    >
-        <div
-            id="gradient-line"
-            class="gradient-line mt-2 w-full lg:mx-0 relative"
+            class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0"
         >
             <div
-                id="gradient-track"
-                class="h-[20px] w-full rounded-sm absolute top-1/2"
-                style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
+                id="gradient-color-canvas"
+                class="absolute shadow-md rounded-xl top-0 bottom-0 left-0 right-0"
+                style="background: {styleString}"
             />
 
+            <!-- LEFT DIRECTIONS -->
             <div
-                id="gradient-selectors"
-                class="w-full flex flex-row justify-between"
+                id="left-directions"
+                class="absolute top-0 bottom-0 left-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between p-2 "
             >
-                <!-- COLOR HANDLE 1 -->
-                <button
-                    id="color-1-handle"
-                    use:draggable={{
-                        axis: "x",
-                        bounds: "parent",
-                        defaultPosition: { x: coordOne, y: 0 },
-                    }}
-                    on:click={() => (selected = 1)}
-                    on:svelte-drag={() => setCoordOne()}
-                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
-                    class:border-white={selected == 1}
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-tl"}
+                />
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-l"}
+                />
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-bl"}
+                />
+            </div>
+            <div
+                id="right-directions"
+                class="absolute top-2 bottom-2 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between pr-2 "
+            >
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-tr"}
+                />
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-r"}
+                />
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-br"}
+                />
+            </div>
+            <div
+                id="top-direction"
+                class="absolute top-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pt-2 z-10 mx-12"
+            >
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-t"}
+                />
+            </div>
+            <div
+                id="bottom-direction"
+                class="absolute bottom-0 left-0 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-row justify-center items-center pb-2 z-10 mx-12"
+            >
+                <DirectionButton
+                    currentDirection={direction}
+                    {setDirection}
+                    direction={"bg-gradient-to-b"}
+                />
+            </div>
+        </div>
+
+        <!-- OPTION CARD -->
+        <div
+            id="gradient-options-wrapper"
+            class="border-[1px] border-opacity-40 shadow-md border-indigo-300 w-full  bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border"
+        >
+            <div
+                id="gradient-line"
+                class="gradient-line mt-2 w-full lg:mx-0 relative"
+            >
+                <div
+                    id="gradient-track"
+                    class="h-[20px] w-full rounded-sm absolute top-1/2"
+                    style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
+                />
+
+                <div
+                    id="gradient-selectors"
+                    class="w-full flex flex-row justify-between"
                 >
-                    <div
-                        class="handle-body rounded-sm w-[20px] h-6 px-2"
-                        style="background-color: {colorOne};"
-                    />
-                </button>
-
-                <!-- COLOR HANDLE 2 -->
-                <button
-                    id="color-2-handle"
-                    use:draggable={{
-                        axis: "x",
-                        bounds: "parent",
-                        defaultPosition: {
-                            x: (getCanvasLength() / coordTwo) * 100,
-                            y: 0,
-                        },
-                    }}
-                    on:click={() => (selected = 2)}
-                    on:svelte-drag={() => setCoordTwo()}
-                    class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
-                    class:border-white={selected == 2}
-                >{coordTwo}
-                    <div
-                        class="handle-body rounded-sm w-[20px] h-6 px-2"
-                        style="background-color: {colorTwo};"
-                    />
-                </button>
-
-                {#if middleColor}
-                    <!-- COLOR HANDLE 3 -->
+                    <!-- COLOR HANDLE 1 -->
                     <button
-                        id="color-3-handle"
+                        id="color-1-handle"
+                        draggable="true"
+                        on:dragstart={(e) => {
+                            dragOne = true;
+                        }}
+                        on:drag={() => {}}
+                        on:dragend={(e) => {
+                            dragOne = false;
+                        }}
+                        on:click={() => (selected = 1)}
+                        class="relative z-10 flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                        class:border-white={selected == 1}
+                    >
+                        <div
+                            class="handle-body rounded-sm w-[20px] h-6 px-2"
+                            style="background-color: {colorOne};"
+                        />
+                    </button>
+
+                    <!-- COLOR HANDLE 2 -->
+                    <button
+                        id="color-2-handle"
                         use:draggable={{
                             axis: "x",
                             bounds: "parent",
                             defaultPosition: {
-                                x: (getCanvasLength() / coordThree) * 100,
+                                x: (getCanvasLength() / coordTwo) * 100,
                                 y: 0,
                             },
                         }}
-                        on:click={() => (selected = 3)}
-                        on:svelte-drag={() => setCoordThree()}
+                        on:click={() => (selected = 2)}
+                        on:svelte-drag={() => setCoordTwo()}
                         class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
-                        class:border-white={selected == 3}
-                    >{coordThree}
+                        class:border-white={selected == 2}
+                        >
                         <div
                             class="handle-body rounded-sm w-[20px] h-6 px-2"
-                            style="background-color: {colorThree};"
+                            style="background-color: {colorTwo};"
                         />
                     </button>
+
+                    {#if middleColor}
+                        <!-- COLOR HANDLE 3 -->
+                        <button
+                            id="color-3-handle"
+                            use:draggable={{
+                                axis: "x",
+                                bounds: "parent",
+                                defaultPosition: {
+                                    x: (getCanvasLength() / coordThree) * 100,
+                                    y: 0,
+                                },
+                            }}
+                            on:click={() => (selected = 3)}
+                            on:svelte-drag={() => setCoordThree()}
+                            class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                            class:border-white={selected == 3}
+                            >
+                            <div
+                                class="handle-body rounded-sm w-[20px] h-6 px-2"
+                                style="background-color: {colorThree};"
+                            />
+                        </button>
+                    {/if}
+                </div>
+
+                {#if !middleColor}
+                    <AddColorButton addThird={() => (middleColor = true)} />
                 {/if}
             </div>
 
-            {#if !middleColor}
-                <AddColorButton addThird={() => (middleColor = true)} />
+            <!-- HANDLE SPECIFIC -->
+            <div class="mt-10">
+                <ColorButton
+                    openPicker={() => (picker = !picker)}
+                    setColor={setColorFromInput}
+                    {selected}
+                    labelString={"Color"}
+                    color={selected == 1 ? colorOne : colorTwo}
+                />
+            </div>
+            {#if middleColor && selected == 3}
+                <button class="" on:click={() => (middleColor = false)}>
+                    DELETE
+                </button>
             {/if}
-        </div>
-
-        <!-- HANDLE SPECIFIC -->
-        <div class="mt-10">
-            <ColorButton
-                openPicker={() => (picker = !picker)}
-                setColor={setColorFromInput}
-                {selected}
-                labelString={"Color"}
-                color={selected == 1 ? colorOne : colorTwo}
-            />
-        </div>
-        {#if middleColor && selected == 3}
-            <button class="" on:click={() => (middleColor = false)}>
-                DELETE
-            </button>
-        {/if}
-        {#if picker}
-            <ColorPicker
-                isInput={false}
-                isOpen={picker}
-                hex={selected == 1
-                    ? colorOne
-                    : selected == 2
-                    ? colorTwo
-                    : colorThree}
-                components={{ wrapper: CPickerWrapper }}
-                on:input={(e) => setColorFromInput(e.detail.hex, selected)}
-            />
-        {/if}
-        <!-- GRADIENT TYPE SELECT -->
-        <div
-            id="gradient-type-select"
-            class="flex flex-row justify-between mt-4"
-        >
-            <select
-                name="gradient-type-select"
-                id=""
-                bind:value={gradientType}
-                class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10 w-full"
+            {#if picker}
+                <ColorPicker
+                    isInput={false}
+                    isOpen={picker}
+                    hex={selected == 1
+                        ? colorOne
+                        : selected == 2
+                        ? colorTwo
+                        : colorThree}
+                    components={{ wrapper: CPickerWrapper }}
+                    on:input={(e) => setColorFromInput(e.detail.hex, selected)}
+                />
+            {/if}
+            <!-- GRADIENT TYPE SELECT -->
+            <div
+                id="gradient-type-select"
+                class="flex flex-row justify-between mt-4 "
             >
-                <option value="linear">Linear</option>
-                <option value="radial">Radial</option>
-                <option value="conic">Conic</option>
-            </select>
-        </div>
-        <!-- DIRECTION SELECT -->
-        <div id="gradient-direction-select" class="mt-4">
-            <select
-                name=""
-                id=""
-                class="bg-indigo-900 rounded-lg px-4 flex items-center justify-center shadow-md h-10 w-full"
-                bind:value={direction}
-            >
-                {#each linearDirections as directionString}
-                    <option value={directionString}
-                        >{directionMap.get(directionString)}</option
-                    >
-                {/each}
-            </select>
-        </div>
+                <select
+                    name="gradient-type-select"
+                    id=""
+                    bind:value={gradientType}
+                    class="rounded-lg px-4 flex items-center justify-center shadow-sm h-10 w-full border-[2px] bg-transparent"
+                >
+                    <option value="linear">Linear</option>
+                    <option value="radial">Radial</option>
+                    <option value="conic">Conic</option>
+                </select>
+            </div>
+            <!-- DIRECTION SELECT -->
+            <div id="gradient-direction-select" class="mt-4">
+                <select
+                    name=""
+                    id=""
+                    class="rounded-lg px-4 flex items-center justify-center shadow-sm h-10 w-full border-[2px] bg-transparent"
+                    bind:value={direction}
+                >
+                    {#each linearDirections as directionString}
+                        <option value={directionString}
+                            >{directionMap.get(directionString)}</option
+                        >
+                    {/each}
+                </select>
+            </div>
 
-        <div class="css-code mt-4 gap-2 flex flex-col">
-            <CodeBlock label={"CSS"} code={"background: " + styleString} />
-            <CodeBlock
-                label={"TAILWIND CSS"}
-                code={"background: " + getTailwindBGString()}
-            />
+            <div class="css-code mt-4 gap-2 flex flex-col">
+                <CodeBlock label={"CSS"} code={"background: " + styleString} />
+                <CodeBlock
+                    label={"TAILWIND CSS"}
+                    code={"background: " + getTailwindBGString()}
+                />
+            </div>
         </div>
     </div>
 
-  
     <div class="toast-wrapper">
         <SvelteToast />
     </div>

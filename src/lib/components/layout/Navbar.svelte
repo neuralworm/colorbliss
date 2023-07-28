@@ -1,4 +1,4 @@
-<header class="border-b-[1px] border-indigo-900">
+<header class="border-b-[1px] border-indigo-200 bg-white">
 
     <div class="relative h-12 flex items-center justify-center">
         <nav id="navbar" class="flex flex-row items-center gap-4 text-sm font-semibold tracking-wide">
