@@ -1,7 +1,7 @@
 <script lang="ts">
     import ColorPicker from "svelte-awesome-color-picker";
     import OptionButton from "./OptionButton.svelte";
-    import { setContext } from "svelte";
+    import { onMount, setContext } from "svelte";
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
     import { draggable } from "svelte-drag";
@@ -19,34 +19,68 @@
     import { validateHTMLColorHex } from "validate-color";
     import CPickerWrapper from "./CPickerWrapper.svelte";
     import AddColorButton from "./AddColorButton.svelte";
+    import {v4 as uuid} from "uuid/index"
+
     // COLOR STATE
     let colorOne: string = "#40c9ff";
     let colorTwo: string = "#e81cff";
     let colorThree: string = "#ff930f";
+    let defaultOne: Color = {
+        hex: "#40c9ff",
+        pos: 0,
+        id: uuid()
+    }
+    let defaultTwo: Color = {
+        hex: "#e81cff",
+        pos: 0,
+        id: uuid()
+    }
+    // MANAGE COLOR LIST
+    let colors: Color[] = [defaultOne, defaultTwo]
+    const addColor = (hex: string, position: number) => {
+        if(colors.length >= 3) return
+        let newColor: Color = {
+            hex: hex,
+            pos: position,
+            id: uuid()
+        }
+        colors.push(newColor)
+    }
+    const removeColor = (id: string) => {
+        let index = colors.map((color: Color) => color.id).indexOf(id)
+        colors.splice(index, 1)
+    }
+
 
     let selected: number = 1;
 
     // DRAG
     let dragOne: boolean = false;
-
+    let mouseX = 0
+    let blank = document.createElement('div')
+    blank.style.visibility = "hidden"
     let coordOne: number = 0;
+    let pixOne: number = 0
     let coordTwo: number = 100;
     let coordThree: number = 50;
 
     let picker: boolean = false;
 
-    const setCoordOne = () => {
-        let offset = getOffset("color-1-handle");
-        coordOne =
-            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
+    const setCoordOne = (e: DragEvent) => {
+        let offset = getOffsetPercent("color-1-handle", e);
+        console.log(offset)
+        coordOne = offset
+        // coordOne =
+        //     Math.ceil(Math.floor((offset) / 5) * 5);
+            pixOne = (coordOne/100) * getCanvasLength()! - 20
     };
-    const setCoordTwo = () => {
-        let offset = getOffset("color-2-handle");
+    const setCoordTwo = (e: DragEvent) => {
+        let offset = getOffsetPercent("color-2-handle", e);
         coordTwo =
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
-    const setCoordThree = () => {
-        let offset = getOffset("color-3-handle");
+    const setCoordThree = (e: DragEvent) => {
+        let offset = getOffsetPercent("color-3-handle", e);
         coordThree =
             Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
     };
@@ -170,18 +204,26 @@
         middleColor
     );
 
+    onMount(()=>{
+        document.ondragover = (e) => {
+            mouseX = e.clientX
+        }
+    })
+    
+
     // UTIL
     const getCanvasLength = () => {
         if (!document) return;
         return document.getElementById("gradient-line")?.offsetWidth!;
     };
-    const getOffset = (handleID: string) => {
-        let el = document.getElementById(handleID);
-        let elOff = el?.getBoundingClientRect();
+    const getOffsetPercent = (handleID: string, e: DragEvent): number => {
         let canvasLength = getCanvasLength();
         let line = document.getElementById("gradient-line");
         let lineRect = line?.getBoundingClientRect();
-        let x = elOff!.left - lineRect!.left;
+        let x = mouseX - lineRect!.left;
+        x = (x / canvasLength!) * 100
+        if(x < 0) return 0
+        if(x > 100) return 100
         return x;
     };
     const setColorFromInput = (hexString: string, slot: number) => {
@@ -344,14 +386,16 @@
                         draggable="true"
                         on:dragstart={(e) => {
                             dragOne = true;
+                            e.dataTransfer?.setDragImage(blank,0, 0)
                         }}
-                        on:drag={() => {}}
+                        on:drag={(e) => setCoordOne(e)}
                         on:dragend={(e) => {
                             dragOne = false;
                         }}
                         on:click={() => (selected = 1)}
-                        class="relative z-10 flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
+                        class="relative z-10 flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50 w-[40px]"
                         class:border-white={selected == 1}
+                        style="transform: translateX({pixOne}px)"
                     >
                         <div
                             class="handle-body rounded-sm w-[20px] h-6 px-2"
@@ -421,6 +465,7 @@
                     color={selected == 1 ? colorOne : colorTwo}
                 />
             </div>
+            {coordOne}
             {#if middleColor && selected == 3}
                 <button class="" on:click={() => (middleColor = false)}>
                     DELETE

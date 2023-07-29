@@ -85,6 +85,18 @@ const linear_tw_template = "DIRECTION from-[COLOR_1] from via-[COLOR_3] to-[COLO
 const radial_tw_template = "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
 const conical_tw_template = "bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
 
+const getFrom = (number: number): string => {
+    if(number % 5 == 0) return `from-${number}%`
+    return `from-[${number}%]`
+}
+const getVia = (number: number): string => {
+    if(number % 5 == 0) return `via-${number}%`
+    return `via-[${number}%]`
+}
+const getTo = (number: number): string => {
+    if(number % 5 == 0) return `to-${number}%`
+    return `to-[${number}%]`
+}
 
 
 
