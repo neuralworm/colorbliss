@@ -34,41 +34,44 @@ const linear_css_template = "linear-gradient(DIRECTION, COLOR_1, COLOR_2, COLOR_
 const radial_css_template = "radial-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_2, COLOR_3)"
 const conical_css_template = "conic-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_2, COLOR_3)"
 
-export const getStyleStringOv = (gradientType: string, colorOne: string, colorTwo: string, colorThree: string|null = null, coordOne: number, coordTwo: number, coordThree: number|null = null, direction: string): string => {
-    let {color1, coord1, color2, coord2, color3, coord3} = reorder(colorOne, coordOne, colorTwo, coordTwo, colorThree, coordThree)
+export const getStyleStringOv = (gradientType: string, colors: Color[], direction: string): string => {
+    let ordered = getOrdered(colors)
     // RADIAL
     if (gradientType == "radial")
-        return `radial-gradient(${colorOne} ${coordOne}%, ${
-            colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%)`;
+        return `radial-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
+            ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+        } ${ordered[1].hex} ${ordered[1].pos}%)`;
 
     // LINEAR
     if (gradientType == "linear")
         
-        return `linear-gradient(${directionMap.get(direction)}, ${colorOne} ${coordOne}%, ${
-            colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%)`;
+        return `linear-gradient(${directionMap.get(direction)}, ${ordered[0].hex} ${ordered[0].pos}%, ${
+            ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+        } ${ordered[1].hex} ${ordered[1].pos}%)`;
 
     // CONIC
     if (gradientType == "conic")
-        return `conic-gradient(${colorOne} ${coordOne}%, ${
-            colorThree ? colorThree + " " + coordThree + "%," : ""
-        } ${colorTwo} ${coordTwo}%)`;
+        return `conic-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
+            ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+        } ${ordered[1].hex} ${ordered[1].pos}%)`;
 
     // FALLBACK
     return ``;
 };
 type Position = [string, number] // [color, coord]
-
-export const getGradientLineStyle = (colorOne: string, colorTwo: string, colorThree: string, coordOne: number, coordTwo: number, coordThree: number, middle: boolean) => {
-    return `linear-gradient(to right, ${colorOne} ${coordOne}%, ${
-        middle ? colorThree + " " + coordThree + "%," : ""
-    } ${colorTwo} ${coordTwo}%)`;
+export const getOrdered = (colors: Color[]): Color[] => {
+    return colors.sort((a: Color, b: Color) => a.pos - b.pos)
+}
+export const getGradientLineStyle = (colors: Color[]) => {
+    let ordered: Color [] = getOrdered(colors)
+    console.log(ordered)
+    return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
+        ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+    } ${ordered[1].hex} ${ordered[1].pos}%)`;
 }
 
-const reorder = (colorOne: string, coordOne: number, colorTwo: string, coordTwo: number, colorThree: string|null, coordThree: number|null) => {
-    let array: Position[] = [[colorOne, coordOne], [colorTwo, coordTwo], [colorThree, coordThree]]
-    let ordered: Position[] = array.sort((a, b) => {
+const reorder = (colors: Color[]) => {
+    let ordered: Position[] = colors.sort((a, b) => {
         return a[1]-b[1]
     })
     return{

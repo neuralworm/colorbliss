@@ -9,7 +9,9 @@
         copyToClipboard,
         directionMap,
         getGradientLineStyle,
+        getOrdered,
         getStyleStringOv,
+        getWidth,
     } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
@@ -19,7 +21,7 @@
     import { validateHTMLColorHex } from "validate-color";
     import CPickerWrapper from "./CPickerWrapper.svelte";
     import AddColorButton from "./AddColorButton.svelte";
-    import {v4 as uuid} from "uuid/index"
+    import {v4 as uuid} from "uuid"
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
@@ -32,11 +34,22 @@
     }
     let defaultTwo: Color = {
         hex: "#e81cff",
-        pos: 0,
+        pos: 100,
         id: uuid()
     }
     // MANAGE COLOR LIST
     let colors: Color[] = [defaultOne, defaultTwo]
+    const lineClickHandler = (e: MouseEvent) => {
+        // Get click position and get color
+        let width = getWidth()
+        let trackPositionX = document.getElementById('gradient-track')?.getBoundingClientRect().left
+        let mouseX = e.clientX
+        let diff: number = mouseX - trackPositionX
+        let position: number = diff / width
+        console.log(position)
+
+        addColor("", position)
+    }
     const addColor = (hex: string, position: number) => {
         if(colors.length >= 3) return
         let newColor: Color = {
@@ -48,49 +61,15 @@
     }
     const removeColor = (id: string) => {
         let index = colors.map((color: Color) => color.id).indexOf(id)
+        if(index < 0) return
         colors.splice(index, 1)
     }
 
 
     let selected: number = 1;
 
-    // DRAG
-    let dragOne: boolean = false;
-    let mouseX = 0
-    let blank = document.createElement('div')
-    blank.style.visibility = "hidden"
-    let coordOne: number = 0;
-    let pixOne: number = 0
-    let coordTwo: number = 100;
-    let coordThree: number = 50;
 
     let picker: boolean = false;
-
-    const setCoordOne = (e: DragEvent) => {
-        let offset = getOffsetPercent("color-1-handle", e);
-        console.log(offset)
-        coordOne = offset
-        // coordOne =
-        //     Math.ceil(Math.floor((offset) / 5) * 5);
-            pixOne = (coordOne/100) * getCanvasLength()! - 20
-    };
-    const setCoordTwo = (e: DragEvent) => {
-        let offset = getOffsetPercent("color-2-handle", e);
-        coordTwo =
-            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
-    };
-    const setCoordThree = (e: DragEvent) => {
-        let offset = getOffsetPercent("color-3-handle", e);
-        coordThree =
-            Math.ceil(Math.floor((offset / getCanvasLength()!) * 100) / 5) * 5;
-    };
-
-    // DRAG API
-    const draggingOne = (e: DragEvent) => {
-        console.log(e);
-    };
-
-    let middleColor: boolean = false;
 
     let direction: string = "bg-gradient-to-r";
 
@@ -109,32 +88,25 @@
 
     // SET STATE OF CURRENTLY DISPLAYED GRADIENT AS NORMAL CSS STYLE (NOT TAILWINDS CLASSES)
     const getStyleString = (gradientType: string): string => {
-        let { color1, coord1, color2, coord2, color3, coord3 } = reorder(
-            colorOne,
-            coordOne,
-            colorTwo,
-            coordTwo,
-            colorThree,
-            coordThree
-        );
+        let ordered: Color[] = getOrdered(colors)
         // console.log(color1, coord1, color2, coord2, color3, coord3)
         // RADIAL
         if (gradientType == "radial")
-            return `radial-gradient(${color1} ${coord1}%, ${
-                middleColor ? color3 + " " + coord3 + "%," : ""
-            } ${color2} ${coord2}%`;
+            return `radial-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
+                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+            } ${ordered[1].hex} ${ordered[1].pos}%`;
 
         // LINEAR
         if (gradientType == "linear")
-            return `linear-gradient(to right, ${color1} ${coord1}%, ${
-                middleColor ? color3 + " " + coord3 + "%," : ""
-            } ${color2} ${coord2}%`;
+            return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
+                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+            } ${ordered[1].hex} ${ordered[1].pos}%`;
 
         // CONIC
         if (gradientType == "conic")
-            return `conic-gradient(${color1} ${coord1}%, ${
-                middleColor ? color3 + " " + coord3 + "%," : ""
-            } ${color2} ${coord2}%`;
+            return `conic-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
+                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
+            } ${ordered[1].hex} ${ordered[1].pos}%`;
 
         // FALLBACK
         return ``;
@@ -178,31 +150,15 @@
         } to-[${colorThree}]"`;
     };
 
-    $: styleString = getStyleString(gradientType);
-    $: coordOne ? (styleString = getStyleString(gradientType)) : null;
-    $: coordTwo ? (styleString = getStyleString(gradientType)) : null;
-    $: coordThree ? (styleString = getStyleString(gradientType)) : null;
+    $: styleString = getStyleString(gradientType)
     $: direction
         ? (styleString = getStyleStringOv(
               gradientType,
-              colorOne,
-              colorTwo,
-              middleColor ? colorThree : null,
-              coordOne,
-              coordTwo,
-              middleColor ? coordThree : null,
+              colors,
               direction
           ))
         : null;
-    $: lineGradientString = getGradientLineStyle(
-        colorOne,
-        colorTwo,
-        colorThree,
-        coordOne,
-        coordTwo,
-        coordThree,
-        middleColor
-    );
+    $: lineGradientString = getGradientLineStyle(colors);
 
     onMount(()=>{
         document.ondragover = (e) => {
@@ -370,10 +326,12 @@
                 id="gradient-line"
                 class="gradient-line mt-2 w-full lg:mx-0 relative"
             >
+                <!-- LINE COMPONENT -->
                 <div
                     id="gradient-track"
                     class="h-[20px] w-full rounded-sm absolute top-1/2"
                     style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
+                    on:click={(e) => lineClickHandler(e)}
                 />
 
                 <div
@@ -383,19 +341,11 @@
                     <!-- COLOR HANDLE 1 -->
                     <button
                         id="color-1-handle"
-                        draggable="true"
-                        on:dragstart={(e) => {
-                            dragOne = true;
-                            e.dataTransfer?.setDragImage(blank,0, 0)
-                        }}
-                        on:drag={(e) => setCoordOne(e)}
-                        on:dragend={(e) => {
-                            dragOne = false;
-                        }}
+                       
                         on:click={() => (selected = 1)}
-                        class="relative z-10 flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50 w-[40px]"
-                        class:border-white={selected == 1}
-                        style="transform: translateX({pixOne}px)"
+                        class="relative z-10 flex items-center justify-center p-2 bg-white rounded-md shadow-md border-[3px] border-slate-300 border-opacity-50 w-[40px]"
+                        class:border-black={selected == 1}
+                       
                     >
                         <div
                             class="handle-body rounded-sm w-[20px] h-6 px-2"
@@ -410,14 +360,14 @@
                             axis: "x",
                             bounds: "parent",
                             defaultPosition: {
-                                x: (getCanvasLength() / coordTwo) * 100,
+                                x: colors[1].pos,
                                 y: 0,
                             },
                         }}
                         on:click={() => (selected = 2)}
-                        on:svelte-drag={() => setCoordTwo()}
-                        class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
-                        class:border-white={selected == 2}
+                        on:svelte-drag={() => {}}
+                        class=" flex items-center justify-center p-2 bg-white rounded-md shadow-md border-[3px] border-slate-300 border-opacity-50"
+                        class:border-black={selected == 2}
                         >
                         <div
                             class="handle-body rounded-sm w-[20px] h-6 px-2"
@@ -425,7 +375,7 @@
                         />
                     </button>
 
-                    {#if middleColor}
+                    {#if colors[2]}
                         <!-- COLOR HANDLE 3 -->
                         <button
                             id="color-3-handle"
@@ -433,12 +383,12 @@
                                 axis: "x",
                                 bounds: "parent",
                                 defaultPosition: {
-                                    x: (getCanvasLength() / coordThree) * 100,
+                                    x: colors[2].pos,
                                     y: 0,
                                 },
                             }}
                             on:click={() => (selected = 3)}
-                            on:svelte-drag={() => setCoordThree()}
+                            on:svelte-drag={() => {}}
                             class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
                             class:border-white={selected == 3}
                             >
@@ -450,9 +400,6 @@
                     {/if}
                 </div>
 
-                {#if !middleColor}
-                    <AddColorButton addThird={() => (middleColor = true)} />
-                {/if}
             </div>
 
             <!-- HANDLE SPECIFIC -->
@@ -465,12 +412,7 @@
                     color={selected == 1 ? colorOne : colorTwo}
                 />
             </div>
-            {coordOne}
-            {#if middleColor && selected == 3}
-                <button class="" on:click={() => (middleColor = false)}>
-                    DELETE
-                </button>
-            {/if}
+            
             {#if picker}
                 <ColorPicker
                     isInput={false}
