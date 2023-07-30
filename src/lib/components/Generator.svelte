@@ -8,6 +8,7 @@
     import {
         copyToClipboard,
         directionMap,
+        getBetweenTwo,
         getGradientLineStyle,
         getOrdered,
         getStyleStringOv,
@@ -40,15 +41,38 @@
     // MANAGE COLOR LIST
     let colors: Color[] = [defaultOne, defaultTwo]
     const lineClickHandler = (e: MouseEvent) => {
+        if(colors.length >= 3) return
         // Get click position and get color
         let width = getWidth()
         let trackPositionX = document.getElementById('gradient-track')?.getBoundingClientRect().left
         let mouseX = e.clientX
         let diff: number = mouseX - trackPositionX
-        let position: number = diff / width
-        console.log(position)
+        let position: number = Math.round((diff / width) * 100)
+        
+        // get side colors
+        let ordered = getOrdered(colors)
+        let hex1, hex2, ratio
+        if(position < ordered[0].pos){
+            hex1 = ordered[0].hex
+            hex2 = ordered[0].hex
+            ratio = position / ordered[0].pos
+        }
+        else if(position > ordered[0].pos && position < ordered[1].pos){
+            hex1 = ordered[0].hex
+            hex2 = ordered[1].hex
+            ratio = (position - ordered[0].pos) / (ordered[1].pos - ordered[0].pos)
 
-        addColor("", position)
+        }
+        else{
+            hex1 = ordered[1].hex
+            hex2 = ordered[1].hex
+            ratio = (position - ordered[1].pos) / (1 - ordered[1].pos)
+        }
+        console.log(hex1, hex2, ratio)
+        let newHex = getBetweenTwo(hex1, hex2, ratio)
+        console.log(newHex)
+
+        addColor(newHex, position)
     }
     const addColor = (hex: string, position: number) => {
         if(colors.length >= 3) return
@@ -58,6 +82,7 @@
             id: uuid()
         }
         colors.push(newColor)
+        console.log(colors)
     }
     const removeColor = (id: string) => {
         let index = colors.map((color: Color) => color.id).indexOf(id)
@@ -66,7 +91,7 @@
     }
 
 
-    let selected: number = 1;
+    let selected: number = 0;
 
 
     let picker: boolean = false;
@@ -82,35 +107,12 @@
 
     const setGradientType = (string: string) => {
         gradientType = string.toLowerCase();
-        styleString = getStyleString(gradientType);
+        styleString = getStyleStringOv(gradientType, colors, direction);
     };
     setContext("setGradientType", { setGradientType });
 
     // SET STATE OF CURRENTLY DISPLAYED GRADIENT AS NORMAL CSS STYLE (NOT TAILWINDS CLASSES)
-    const getStyleString = (gradientType: string): string => {
-        let ordered: Color[] = getOrdered(colors)
-        // console.log(color1, coord1, color2, coord2, color3, coord3)
-        // RADIAL
-        if (gradientType == "radial")
-            return `radial-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
-                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
-            } ${ordered[1].hex} ${ordered[1].pos}%`;
-
-        // LINEAR
-        if (gradientType == "linear")
-            return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
-                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
-            } ${ordered[1].hex} ${ordered[1].pos}%`;
-
-        // CONIC
-        if (gradientType == "conic")
-            return `conic-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
-                ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
-            } ${ordered[1].hex} ${ordered[1].pos}%`;
-
-        // FALLBACK
-        return ``;
-    };
+   
     type Position = [string, number]; // [color, coord]
     // Reorders colors in ascending numeric order
     const reorder = (
@@ -150,7 +152,8 @@
         } to-[${colorThree}]"`;
     };
 
-    $: styleString = getStyleString(gradientType)
+    // REACTIVE
+    $: styleString = getStyleStringOv(gradientType, colors, direction)
     $: direction
         ? (styleString = getStyleStringOv(
               gradientType,
@@ -188,14 +191,14 @@
         console.log(valid);
         if (validateHTMLColorHex(hexString)) {
             switch (slot) {
+                case 0:
+                    colors[0].hex = valid ? hexString : colors[0].hex;
+                    return;
                 case 1:
-                    colorOne = valid ? hexString : colorOne;
+                    colors[1].hex = valid ? hexString : colors[1].hex;
                     return;
                 case 2:
-                    colorTwo = valid ? hexString : colorTwo;
-                    return;
-                case 3:
-                    colorThree = valid ? hexString : colorThree;
+                    colors[2].hex = valid ? hexString : colors[2].hex;
                     return;
                 default:
                     return;
@@ -338,66 +341,31 @@
                     id="gradient-selectors"
                     class="w-full flex flex-row justify-between"
                 >
+                   
+
                     <!-- COLOR HANDLE 1 -->
                     <button
                         id="color-1-handle"
-                       
-                        on:click={() => (selected = 1)}
-                        class="relative z-10 flex items-center justify-center p-2 bg-white rounded-md shadow-md border-[3px] border-slate-300 border-opacity-50 w-[40px]"
-                        class:border-black={selected == 1}
-                       
-                    >
-                        <div
-                            class="handle-body rounded-sm w-[20px] h-6 px-2"
-                            style="background-color: {colorOne};"
-                        />
-                    </button>
-
-                    <!-- COLOR HANDLE 2 -->
-                    <button
-                        id="color-2-handle"
                         use:draggable={{
                             axis: "x",
                             bounds: "parent",
                             defaultPosition: {
-                                x: colors[1].pos,
+                                x: colors[0].pos,
                                 y: 0,
                             },
                         }}
-                        on:click={() => (selected = 2)}
+                        on:mousedown={() => (selected = 0)}
                         on:svelte-drag={() => {}}
-                        class=" flex items-center justify-center p-2 bg-white rounded-md shadow-md border-[3px] border-slate-300 border-opacity-50"
-                        class:border-black={selected == 2}
+                        class=" flex items-center justify-center  bg-white rounded-full shadow-md border-[6px] border-slate-300 border-opacity-50"
+                        class:border-black={selected == 0}
                         >
                         <div
-                            class="handle-body rounded-sm w-[20px] h-6 px-2"
-                            style="background-color: {colorTwo};"
+                            class="handle-body rounded-full h-4 w-4 px-2"
+                            style="background-color: {colors[0].hex};"
                         />
                     </button>
 
-                    {#if colors[2]}
-                        <!-- COLOR HANDLE 3 -->
-                        <button
-                            id="color-3-handle"
-                            use:draggable={{
-                                axis: "x",
-                                bounds: "parent",
-                                defaultPosition: {
-                                    x: colors[2].pos,
-                                    y: 0,
-                                },
-                            }}
-                            on:click={() => (selected = 3)}
-                            on:svelte-drag={() => {}}
-                            class=" flex items-center justify-center p-2 bg-indigo-950 rounded-md shadow-md border-[1px] border-indigo-900 border-opacity-50"
-                            class:border-white={selected == 3}
-                            >
-                            <div
-                                class="handle-body rounded-sm w-[20px] h-6 px-2"
-                                style="background-color: {colorThree};"
-                            />
-                        </button>
-                    {/if}
+                    
                 </div>
 
             </div>
@@ -409,7 +377,7 @@
                     setColor={setColorFromInput}
                     {selected}
                     labelString={"Color"}
-                    color={selected == 1 ? colorOne : colorTwo}
+                    color={colors[selected].hex}
                 />
             </div>
             
@@ -417,11 +385,7 @@
                 <ColorPicker
                     isInput={false}
                     isOpen={picker}
-                    hex={selected == 1
-                        ? colorOne
-                        : selected == 2
-                        ? colorTwo
-                        : colorThree}
+                    hex={colors[selected].hex}
                     components={{ wrapper: CPickerWrapper }}
                     on:input={(e) => setColorFromInput(e.detail.hex, selected)}
                 />

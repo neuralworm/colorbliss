@@ -9,7 +9,7 @@ import Generator from "$lib/components/Generator.svelte";
         <div id="splash-content" class="mx-auto p-8">
             <h4 class="tracking-tight font-semibold  text-xs md:text-sm">TAILWIND GRADIENT GENERATOR</h4>
             <h1 class="text-3xl md:text-6xl tracking-tighter font-extrabold text-transparent bg-clip-text  bg-gradient-to-br relative from-[#40c9ff] to-[#e81cff] drop-shadow-md">
-                COLORWIND
+                COLOR-TAIL
             </h1>
             <p class="mt-8 max-w-md mx-auto tracking-wider text-sm font-semibold md:text-xl opacity-50">Beautiful Tailwind Gradients</p>
         </div>

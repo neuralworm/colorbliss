@@ -1,5 +1,8 @@
 // place files you want to import through the `$lib` alias in this folder.
 import {toast} from '@zerodevx/svelte-toast'
+import hexrgb from 'hex-rgb'
+import rgbhex from 'rgb-hex'
+
 // DIMENSION
 export const getWidth = (): number|undefined => {
     return document.getElementById('gradient-line')?.offsetWidth
@@ -44,10 +47,8 @@ export const getStyleStringOv = (gradientType: string, colors: Color[], directio
 
     // LINEAR
     if (gradientType == "linear")
-        
         return `linear-gradient(${directionMap.get(direction)}, ${ordered[0].hex} ${ordered[0].pos}%, ${
-            ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
-        } ${ordered[1].hex} ${ordered[1].pos}%)`;
+            ordered[2] ? (ordered[1].hex + " " + ordered[1].pos + "%, " + ordered[2].hex + " " + ordered[2].pos + "%") : ` ${ordered[1].hex} ${ordered[1].pos}%)`}`;
 
     // CONIC
     if (gradientType == "conic")
@@ -60,29 +61,16 @@ export const getStyleStringOv = (gradientType: string, colors: Color[], directio
 };
 type Position = [string, number] // [color, coord]
 export const getOrdered = (colors: Color[]): Color[] => {
-    return colors.sort((a: Color, b: Color) => a.pos - b.pos)
+    return JSON.parse(JSON.stringify(colors.sort((a: Color, b: Color) => a.pos - b.pos)))
 }
 export const getGradientLineStyle = (colors: Color[]) => {
     let ordered: Color [] = getOrdered(colors)
-    console.log(ordered)
+    console.log("ordered", ordered)
     return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
         ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
     } ${ordered[1].hex} ${ordered[1].pos}%)`;
 }
 
-const reorder = (colors: Color[]) => {
-    let ordered: Position[] = colors.sort((a, b) => {
-        return a[1]-b[1]
-    })
-    return{
-        color1: ordered[0][0],
-        coord1: ordered[0][1],
-        color2: ordered[1][0],
-        coord2: ordered[1][1],
-        color3: ordered[2][0], 
-        coord3: ordered[2][1]
-    }
-}
 // TAILWIND CLASSES BUILDER
 const linear_tw_template = "DIRECTION from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
 const radial_tw_template = "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-[COLOR_1] from via-[COLOR_3] to-[COLOR_2]"
@@ -128,4 +116,20 @@ const getRandomHex = (): string => {
 }
 const getRandom8bit = () => {
     return Math.floor(Math.random() * 256)
+}
+// HEX
+export const getBetweenTwo = (hex1: string, hex2: string, ratio: number): string => {
+    // ratio should be between 0 and 1
+    let rgb1 = hexrgb(hex1)
+    let rgb2 = hexrgb(hex2)
+    console.log(rgb1, rgb2)
+    let redDiff = rgb1.red - rgb2.red
+    let greenDiff = rgb1.green - rgb2.green
+    let blueDiff = rgb1.blue - rgb2.blue
+    console.log(redDiff, greenDiff, blueDiff)
+    redDiff *= ratio
+    greenDiff *= ratio
+    blueDiff *= ratio
+    let newHex: string = rgbhex(rgb1.red - redDiff, rgb1.green - greenDiff, rgb1.blue - blueDiff)
+    return "#" + newHex
 }
