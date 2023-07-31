@@ -87,10 +87,13 @@
         colors = newColors
     };
     const removeColor = (id: string) => {
+        if(colors.length <= 1) return
+        let newColors = JSON.parse(JSON.stringify(colors))
         let index = colors.map((color: Color) => color.id).indexOf(id);
         if (index < 0) return;
-        let deleted: ColorHandle[] = colors.splice(index, 1)
-        deleted[0].$destroy()
+        newColors.splice(index, 1)
+        colors = newColors
+        selected = 0
     };
 
     const createHandleComponent = (color: Color) => {
@@ -349,7 +352,7 @@
                 <!-- LINE COMPONENT -->
                 <div
                     id="gradient-track"
-                    class="h-[20px] w-full rounded-sm absolute top-1/2"
+                    class="h-[14px] w-full rounded-md absolute top-1/2"
                     style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
                     on:mousedown={(e) => lineClickHandler(e)}
                 />
@@ -360,7 +363,7 @@
                     class="w-full flex flex-row justify-between"
                 >
                     {#each colors as color}
-                        <ColorHandle id={color.id} color={color} hex={color.hex} selected={false} select={()=> selected = colors.map((val)=> val.id).indexOf(color.id)} pos={color.pos}></ColorHandle>
+                        <ColorHandle id={color.id} color={color} hex={color.hex} selected={selected == colors.map(v=>v.id).indexOf(color.id)} select={()=> selected = colors.map((val)=> val.id).indexOf(color.id)} pos={color.pos}></ColorHandle>
                     {/each}
                 </div>
             </div>
@@ -375,7 +378,7 @@
                     color={colors[selected].hex}
                 />
             </div>
-
+            <button on:click={() => removeColor(colors[selected].id)}>delete</button>
             {#if picker}
                 <ColorPicker
                     isInput={false}

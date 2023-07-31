@@ -39,6 +39,7 @@ const conical_css_template = "conic-gradient(at COORD_1 COORD_2, COLOR_1, COLOR_
 
 export const getStyleStringOv = (gradientType: string, colors: Color[], direction: string): string => {
     let ordered = getOrdered(colors)
+    if(ordered.length == 1) return `${ordered[0].hex}`
     // RADIAL
     if (gradientType == "radial")
         return `radial-gradient(${ordered[0].hex} ${ordered[0].pos}%, ${
@@ -65,6 +66,7 @@ export const getOrdered = (colors: Color[]): Color[] => {
 export const getGradientLineStyle = (colors: Color[]) => {
     let ordered: Color [] = getOrdered(colors)
     console.log("ordered", ordered)
+    if(ordered.length == 1) return `${ordered[0].hex}`
     return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
         ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
     } ${ordered[1].hex} ${ordered[1].pos}%)`;

@@ -19,8 +19,8 @@
         },
     }}
     on:mousedown={() => select()}
-    on:svelte-drag={() => {}}
-    class=" flex items-center justify-center bg-white rounded-full shadow-md border-[6px] border-slate-300 border-opacity-50"
+    on:svelte-drag={(e) => {}}
+    class=" flex items-center justify-center bg-white rounded-full shadow-md border-[3px]  border-opacity-100"
     class:border-black={selected}
 >
     <div
