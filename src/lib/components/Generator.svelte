@@ -80,9 +80,11 @@
             pos: position,
             id: uuid(),
         };
-        let newColors = JSON.parse(JSON.stringify(colors));
+        let newColors: Color[] = JSON.parse(JSON.stringify(colors));
         newColors.push(newColor);
         colors = newColors;
+        let newIndex = getOrdered(colors).map((val: Color) => val.id).indexOf(newColor.id)
+        selected = newIndex
     };
     const removeColor = (id: string) => {
         if (colors.length <= 1) return;
@@ -240,7 +242,7 @@
 
 <section
     id="generator-wrapper"
-    class="mx-auto flex items-center justify-center flex-col px-4 container max-w-5xl"
+    class="mx-auto flex items-center justify-center flex-col px-4 container max-w-screen-xl resize-none"
 >
     <div
         id="top-row"
@@ -266,7 +268,7 @@
     <!-- {styleString} -->
 
     <!-- MAIN DISPLAY -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full container resize-none">
         <div
             class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0 col-span-1"
         >
@@ -338,7 +340,6 @@
                 />
             </div>
         </div>
-
         <!-- OPTION CARD -->
         <div
             id="gradient-options-wrapper"
@@ -388,7 +389,7 @@
             <div class="mt-10">
                 <label for="" class="font-bold">Color</label>
                 <button
-                    class="text-red-400 inline-block float-right"
+                    class="text-red-400 inline-block float-right p-2 font-semibold"
                     on:click={() => removeColor(colors[selected].id)}
                     >
                     delete

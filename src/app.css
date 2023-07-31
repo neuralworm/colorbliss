@@ -1,7 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+html{
+    height:100%;
+}
 body{
     /* background: #211c27; */
+    
+}
+section{
+    resize: none;
 }

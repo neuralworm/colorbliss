@@ -2,7 +2,7 @@
     import Logo from "../Logo.svelte";
 
 </script>
-<header class="border-b-[1px] border-indigo-200 bg-white">
+<header class="border-b-[1px] border-indigo-200 bg-white h-[60px]">
     <div class="nav-content mx-auto max-w-5xl flex flex-row items-center justify-between">
         <div class="logo-wrap">
             <Logo></Logo>

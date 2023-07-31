@@ -4,6 +4,9 @@ import Generator from "$lib/components/Generator.svelte";
     import Examples from "$lib/components/layout/Examples.svelte";
 
 </script>
+<svelte:head>
+    <!-- <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0"> -->
+</svelte:head>
 <main>
     <section id="splash" class="p-4 text-center flex flex-col justify-center py-16 relative  backdrop-blur-3xl">
         <div id="splash-content" class="mx-auto p-8">

@@ -65,11 +65,10 @@ export const getOrdered = (colors: Color[]): Color[] => {
 }
 export const getGradientLineStyle = (colors: Color[]) => {
     let ordered: Color [] = getOrdered(colors)
-    console.log("ordered", ordered)
     if(ordered.length == 1) return `${ordered[0].hex}`
     return `linear-gradient(to right, ${ordered[0].hex} ${ordered[0].pos}%, ${
-        ordered[2] ? ordered[2].hex + " " + ordered[2].pos + "%," : ""
-    } ${ordered[1].hex} ${ordered[1].pos}%)`;
+        ordered[2] ? ordered[1].hex + " " + ordered[1].pos + "%," + ordered[2].hex + " " + ordered[2].pos + "%)" : ordered[1].hex + " " + ordered[1].pos + "%)"
+    }`;
 }
 
 // TAILWIND CLASSES BUILDER
