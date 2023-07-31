@@ -4,7 +4,6 @@
     import { onMount, setContext } from "svelte";
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
-    import { draggable } from "svelte-drag";
     import {
         copyToClipboard,
         directionMap,
@@ -31,12 +30,12 @@
     let colorThree: string = "#ff930f";
     let defaultOne: Color = {
         hex: "#40c9ff",
-        pos: 0,
+        pos: 4,
         id: uuid(),
     };
     let defaultTwo: Color = {
         hex: "#e81cff",
-        pos: 100,
+        pos: 95,
         id: uuid(),
     };
     // MANAGE COLOR LIST
@@ -51,7 +50,6 @@
         let mouseX = e.clientX;
         let diff: number = mouseX - trackPositionX;
         let position: number = Math.round((diff / width) * 100);
-
         // get side colors
         let ordered = getOrdered(colors);
         let hex1, hex2, ratio;
@@ -80,33 +78,45 @@
         let newColor: Color = {
             hex: hex,
             pos: position,
-            id: uuid()
+            id: uuid(),
         };
-        let newColors = JSON.parse(JSON.stringify(colors))
+        let newColors = JSON.parse(JSON.stringify(colors));
         newColors.push(newColor);
-        colors = newColors
+        colors = newColors;
     };
     const removeColor = (id: string) => {
-        if(colors.length <= 1) return
-        let newColors = JSON.parse(JSON.stringify(colors))
+        if (colors.length <= 1) return;
+        let newColors = JSON.parse(JSON.stringify(colors));
         let index = colors.map((color: Color) => color.id).indexOf(id);
         if (index < 0) return;
-        newColors.splice(index, 1)
-        colors = newColors
-        selected = 0
+        newColors.splice(index, 1);
+        colors = newColors;
+        selected = 0;
+    };
+    const moveColor = (color: Color, offsetX: number) => {
+        console.log(offsetX);
+        let offsetPerc = getOffsetPercent(color.id, offsetX);
+        // Round to nearest
+        offsetPerc = Math.round(offsetPerc);
+        color.pos = offsetPerc;
+        lineGradientString = getGradientLineStyle(colors);
+        styleString = getStyleStringOv(gradientType, colors, direction);
     };
 
     const createHandleComponent = (color: Color) => {
-        console.log('Creating handle for: ' + color.id)
+        console.log("Creating handle for: " + color.id);
         let newHandleRef = new ColorHandle({
             target: document.getElementById("color-handles")!,
             props: {
                 id: color.id,
                 selected: true,
                 hex: color.hex,
-                select: () => selected = colors.map((val: Color)=> val.id).indexOf(color.id),
+                select: () =>
+                    (selected = colors
+                        .map((val: Color) => val.id)
+                        .indexOf(color.id)),
                 pos: color.pos,
-                color: color
+                color: color,
             },
         });
     };
@@ -167,7 +177,7 @@
     };
     const getTailwindTextString = (): string => {
         return `bg-clip-text  bg-gradient-to-br from-[${colorOne}] ${
-            middleColor ? `via-[#${colorTwo}]` : ""
+            colors[2] ? `via-[#${colorTwo}]` : ""
         } to-[${colorThree}]"`;
     };
 
@@ -178,29 +188,18 @@
         : null;
     $: lineGradientString = getGradientLineStyle(colors);
 
-    onMount(() => {
-        document.ondragover = (e) => {
-            mouseX = e.clientX;
-        };
-
-        // SETUP DEFAULT HANDLES
-        // createHandleComponent(colors[0])
-        // createHandleComponent(colors[1])
-
-
-    });
+    onMount(() => {});
 
     // UTIL
     const getCanvasLength = () => {
         if (!document) return;
         return document.getElementById("gradient-line")?.offsetWidth!;
     };
-    const getOffsetPercent = (handleID: string, e: DragEvent): number => {
-        let canvasLength = getCanvasLength();
+    const getOffsetPercent = (id: string, offsetX: number): number => {
+        let handle = document.getElementById(`color-handle-${id}`);
         let line = document.getElementById("gradient-line");
         let lineRect = line?.getBoundingClientRect();
-        let x = mouseX - lineRect!.left;
-        x = (x / canvasLength!) * 100;
+        let x = (offsetX / (lineRect?.width! - handle?.offsetWidth!)) * 100;
         if (x < 0) return 0;
         if (x > 100) return 100;
         return x;
@@ -267,9 +266,9 @@
     <!-- {styleString} -->
 
     <!-- MAIN DISPLAY -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full">
         <div
-            class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0"
+            class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0 col-span-1"
         >
             <div
                 id="gradient-color-canvas"
@@ -352,24 +351,48 @@
                 <!-- LINE COMPONENT -->
                 <div
                     id="gradient-track"
-                    class="h-[14px] w-full rounded-md absolute top-1/2"
-                    style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
+                    class="h-[14px] w-full rounded-md absolute top-1/2 cursor-copy"
+                    style="background: {lineGradientString}; transform: translate3d(0,-50%,0)"
                     on:mousedown={(e) => lineClickHandler(e)}
                 />
 
                 <!-- COMPONENT TARGET -->
-                <div
-                    id="color-handles"
-                    class="w-full flex flex-row justify-between"
+
+                {#each colors as color}
+                    <ColorHandle
+                        {moveColor}
+                        id={color.id}
+                        {color}
+                        hex={color.hex}
+                        selected={selected ==
+                            colors.map((v) => v.id).indexOf(color.id)}
+                        select={() =>
+                            (selected = colors
+                                .map((val) => val.id)
+                                .indexOf(color.id))}
+                        pos={color.pos}
+                    />
+                {/each}
+
+                <!-- BLANK FOR HEIGHT -->
+                <button
+                    class="items-center justify-center bg-white rounded-full shadow-md border-[3px] border-opacity-100 flex invisible"
+                    class:border-black={selected}
                 >
-                    {#each colors as color}
-                        <ColorHandle id={color.id} color={color} hex={color.hex} selected={selected == colors.map(v=>v.id).indexOf(color.id)} select={()=> selected = colors.map((val)=> val.id).indexOf(color.id)} pos={color.pos}></ColorHandle>
-                    {/each}
-                </div>
+                    <!-- {defaultPixels} -->
+                    <div class="handle-body rounded-full h-4 w-4 px-2" />
+                </button>
             </div>
 
             <!-- HANDLE SPECIFIC -->
             <div class="mt-10">
+                <label for="" class="font-bold">Color</label>
+                <button
+                    class="text-red-400 inline-block float-right"
+                    on:click={() => removeColor(colors[selected].id)}
+                    >
+                    delete
+                </button>
                 <ColorButton
                     openPicker={() => (picker = !picker)}
                     setColor={setColorFromInput}
@@ -378,7 +401,6 @@
                     color={colors[selected].hex}
                 />
             </div>
-            <button on:click={() => removeColor(colors[selected].id)}>delete</button>
             {#if picker}
                 <ColorPicker
                     isInput={false}
@@ -420,14 +442,15 @@
                 </select>
             </div>
 
-            <div class="css-code mt-4 gap-2 flex flex-col">
-                <CodeBlock label={"CSS"} code={"background: " + styleString} />
-                <CodeBlock
-                    label={"TAILWIND CSS"}
-                    code={"background: " + getTailwindBGString()}
-                />
-            </div>
+           
         </div>
+    </div>
+    <div class="css-code mt-4 gap-2 flex flex-col w-full">
+        <CodeBlock label={"CSS"} code={"background: " + styleString} />
+        <CodeBlock
+            label={"TAILWIND CSS"}
+            code={"background: " + getTailwindBGString()}
+        />
     </div>
 
     <div class="toast-wrapper">

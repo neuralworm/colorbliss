@@ -1,28 +1,43 @@
 <script lang="ts">
-    import { draggable } from "svelte-drag";
+    import { onMount } from "svelte";
+import { draggable } from "@neodrag/svelte";
     export let id: string;
     export let selected: boolean;
     export let hex: string;
     export let select: Function;
     export let pos: number
     export let color: Color
+    export let moveColor: Function
+    
+    let defaultPixels: number
+    onMount(()=>{
+        let el = document.getElementById('gradient-track')
+        let handle = document.getElementById(`color-handle-${id}`)
+        console.log(document.getElementById('gradient-track')?.offsetWidth, color.pos, pos, id)
+        defaultPixels = (el.offsetWidth - handle?.offsetWidth) * (color.pos / 100)
+    })
 </script>
 
 <button
-    id="color-1-handle"
+    id={`color-handle-${id}`}
     use:draggable={{
         axis: "x",
         bounds: "parent",
-        defaultPosition: {
-            x: pos,
-            y: 0,
+        position: {
+            x: (document.getElementById('gradient-track').offsetWidth - document.getElementById(`color-handle-${id}`).offsetWidth) * (color.pos / 100),
+            y: 0
         },
+        onDrag: ({offsetX, offsetY}) => {
+                moveColor(color, offsetX)
+        }
     }}
-    on:mousedown={() => select()}
-    on:svelte-drag={(e) => {}}
-    class=" flex items-center justify-center bg-white rounded-full shadow-md border-[3px]  border-opacity-100"
+    on:mousedown={(e) => {
+        select()
+        }}
+    class="items-center justify-center bg-white rounded-full shadow-md border-[3px]  border-opacity-100 flex absolute"
     class:border-black={selected}
->
+    >
+    <!-- {defaultPixels} -->
     <div
         class="handle-body rounded-full h-4 w-4 px-2"
         style="background-color: {color.hex};"
