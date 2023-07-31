@@ -22,7 +22,8 @@
     import { validateHTMLColorHex } from "validate-color";
     import CPickerWrapper from "./CPickerWrapper.svelte";
     import AddColorButton from "./AddColorButton.svelte";
-    import {v4 as uuid} from "uuid"
+    import { v4 as uuid } from "uuid";
+    import ColorHandle from "./layout/ColorHandle.svelte";
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
@@ -31,68 +32,83 @@
     let defaultOne: Color = {
         hex: "#40c9ff",
         pos: 0,
-        id: uuid()
-    }
+        id: uuid(),
+    };
     let defaultTwo: Color = {
         hex: "#e81cff",
         pos: 100,
-        id: uuid()
-    }
+        id: uuid(),
+    };
     // MANAGE COLOR LIST
-    let colors: Color[] = [defaultOne, defaultTwo]
+    let colors: Color[] = [defaultOne, defaultTwo];
     const lineClickHandler = (e: MouseEvent) => {
-        if(colors.length >= 3) return
+        if (colors.length >= 3) return;
         // Get click position and get color
-        let width = getWidth()
-        let trackPositionX = document.getElementById('gradient-track')?.getBoundingClientRect().left
-        let mouseX = e.clientX
-        let diff: number = mouseX - trackPositionX
-        let position: number = Math.round((diff / width) * 100)
-        
+        let width = getWidth();
+        let trackPositionX = document
+            .getElementById("gradient-track")
+            ?.getBoundingClientRect().left;
+        let mouseX = e.clientX;
+        let diff: number = mouseX - trackPositionX;
+        let position: number = Math.round((diff / width) * 100);
+
         // get side colors
-        let ordered = getOrdered(colors)
-        let hex1, hex2, ratio
-        if(position < ordered[0].pos){
-            hex1 = ordered[0].hex
-            hex2 = ordered[0].hex
-            ratio = position / ordered[0].pos
+        let ordered = getOrdered(colors);
+        let hex1, hex2, ratio;
+        if (position < ordered[0].pos) {
+            hex1 = ordered[0].hex;
+            hex2 = ordered[0].hex;
+            ratio = position / ordered[0].pos;
+        } else if (position > ordered[0].pos && position < ordered[1].pos) {
+            hex1 = ordered[0].hex;
+            hex2 = ordered[1].hex;
+            ratio =
+                (position - ordered[0].pos) / (ordered[1].pos - ordered[0].pos);
+        } else {
+            hex1 = ordered[1].hex;
+            hex2 = ordered[1].hex;
+            ratio = (position - ordered[1].pos) / (1 - ordered[1].pos);
         }
-        else if(position > ordered[0].pos && position < ordered[1].pos){
-            hex1 = ordered[0].hex
-            hex2 = ordered[1].hex
-            ratio = (position - ordered[0].pos) / (ordered[1].pos - ordered[0].pos)
+        console.log(hex1, hex2, ratio);
+        let newHex = getBetweenTwo(hex1, hex2, ratio);
+        console.log(newHex);
 
-        }
-        else{
-            hex1 = ordered[1].hex
-            hex2 = ordered[1].hex
-            ratio = (position - ordered[1].pos) / (1 - ordered[1].pos)
-        }
-        console.log(hex1, hex2, ratio)
-        let newHex = getBetweenTwo(hex1, hex2, ratio)
-        console.log(newHex)
-
-        addColor(newHex, position)
-    }
+        addColor(newHex, position);
+    };
     const addColor = (hex: string, position: number) => {
-        if(colors.length >= 3) return
+        if (colors.length >= 3) return;
         let newColor: Color = {
             hex: hex,
             pos: position,
             id: uuid()
-        }
-        colors.push(newColor)
-        console.log(colors)
-    }
+        };
+        let newColors = JSON.parse(JSON.stringify(colors))
+        newColors.push(newColor);
+        colors = newColors
+    };
     const removeColor = (id: string) => {
-        let index = colors.map((color: Color) => color.id).indexOf(id)
-        if(index < 0) return
-        colors.splice(index, 1)
-    }
+        let index = colors.map((color: Color) => color.id).indexOf(id);
+        if (index < 0) return;
+        let deleted: ColorHandle[] = colors.splice(index, 1)
+        deleted[0].$destroy()
+    };
 
+    const createHandleComponent = (color: Color) => {
+        console.log('Creating handle for: ' + color.id)
+        let newHandleRef = new ColorHandle({
+            target: document.getElementById("color-handles")!,
+            props: {
+                id: color.id,
+                selected: true,
+                hex: color.hex,
+                select: () => selected = colors.map((val: Color)=> val.id).indexOf(color.id),
+                pos: color.pos,
+                color: color
+            },
+        });
+    };
 
     let selected: number = 0;
-
 
     let picker: boolean = false;
 
@@ -112,7 +128,7 @@
     setContext("setGradientType", { setGradientType });
 
     // SET STATE OF CURRENTLY DISPLAYED GRADIENT AS NORMAL CSS STYLE (NOT TAILWINDS CLASSES)
-   
+
     type Position = [string, number]; // [color, coord]
     // Reorders colors in ascending numeric order
     const reorder = (
@@ -153,22 +169,23 @@
     };
 
     // REACTIVE
-    $: styleString = getStyleStringOv(gradientType, colors, direction)
+    $: styleString = getStyleStringOv(gradientType, colors, direction);
     $: direction
-        ? (styleString = getStyleStringOv(
-              gradientType,
-              colors,
-              direction
-          ))
+        ? (styleString = getStyleStringOv(gradientType, colors, direction))
         : null;
     $: lineGradientString = getGradientLineStyle(colors);
 
-    onMount(()=>{
+    onMount(() => {
         document.ondragover = (e) => {
-            mouseX = e.clientX
-        }
-    })
-    
+            mouseX = e.clientX;
+        };
+
+        // SETUP DEFAULT HANDLES
+        // createHandleComponent(colors[0])
+        // createHandleComponent(colors[1])
+
+
+    });
 
     // UTIL
     const getCanvasLength = () => {
@@ -180,9 +197,9 @@
         let line = document.getElementById("gradient-line");
         let lineRect = line?.getBoundingClientRect();
         let x = mouseX - lineRect!.left;
-        x = (x / canvasLength!) * 100
-        if(x < 0) return 0
-        if(x > 100) return 100
+        x = (x / canvasLength!) * 100;
+        if (x < 0) return 0;
+        if (x > 100) return 100;
         return x;
     };
     const setColorFromInput = (hexString: string, slot: number) => {
@@ -260,7 +277,7 @@
             <!-- LEFT DIRECTIONS -->
             <div
                 id="left-directions"
-                class="absolute top-0 bottom-0 left-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between p-2 "
+                class="absolute top-0 bottom-0 left-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between p-2"
             >
                 <DirectionButton
                     currentDirection={direction}
@@ -280,7 +297,7 @@
             </div>
             <div
                 id="right-directions"
-                class="absolute top-2 bottom-2 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between pr-2 "
+                class="absolute top-2 bottom-2 right-0 opacity-0 transition-all group-hover:opacity-100 flex flex-col justify-between pr-2"
             >
                 <DirectionButton
                     currentDirection={direction}
@@ -323,7 +340,7 @@
         <!-- OPTION CARD -->
         <div
             id="gradient-options-wrapper"
-            class="border-[1px] border-opacity-40 shadow-md border-indigo-300 w-full  bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border"
+            class="border-[1px] border-opacity-40 shadow-md border-indigo-300 w-full bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border"
         >
             <div
                 id="gradient-line"
@@ -334,40 +351,18 @@
                     id="gradient-track"
                     class="h-[20px] w-full rounded-sm absolute top-1/2"
                     style="background: {lineGradientString}; transform: translate3d(0, -50%,0)"
-                    on:click={(e) => lineClickHandler(e)}
+                    on:mousedown={(e) => lineClickHandler(e)}
                 />
 
+                <!-- COMPONENT TARGET -->
                 <div
-                    id="gradient-selectors"
+                    id="color-handles"
                     class="w-full flex flex-row justify-between"
                 >
-                   
-
-                    <!-- COLOR HANDLE 1 -->
-                    <button
-                        id="color-1-handle"
-                        use:draggable={{
-                            axis: "x",
-                            bounds: "parent",
-                            defaultPosition: {
-                                x: colors[0].pos,
-                                y: 0,
-                            },
-                        }}
-                        on:mousedown={() => (selected = 0)}
-                        on:svelte-drag={() => {}}
-                        class=" flex items-center justify-center  bg-white rounded-full shadow-md border-[6px] border-slate-300 border-opacity-50"
-                        class:border-black={selected == 0}
-                        >
-                        <div
-                            class="handle-body rounded-full h-4 w-4 px-2"
-                            style="background-color: {colors[0].hex};"
-                        />
-                    </button>
-
-                    
+                    {#each colors as color}
+                        <ColorHandle id={color.id} color={color} hex={color.hex} selected={false} select={()=> selected = colors.map((val)=> val.id).indexOf(color.id)} pos={color.pos}></ColorHandle>
+                    {/each}
                 </div>
-
             </div>
 
             <!-- HANDLE SPECIFIC -->
@@ -380,7 +375,7 @@
                     color={colors[selected].hex}
                 />
             </div>
-            
+
             {#if picker}
                 <ColorPicker
                     isInput={false}
@@ -393,7 +388,7 @@
             <!-- GRADIENT TYPE SELECT -->
             <div
                 id="gradient-type-select"
-                class="flex flex-row justify-between mt-4 "
+                class="flex flex-row justify-between mt-4"
             >
                 <select
                     name="gradient-type-select"

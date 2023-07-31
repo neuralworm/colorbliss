@@ -59,9 +59,8 @@ export const getStyleStringOv = (gradientType: string, colors: Color[], directio
     // FALLBACK
     return ``;
 };
-type Position = [string, number] // [color, coord]
 export const getOrdered = (colors: Color[]): Color[] => {
-    return JSON.parse(JSON.stringify(colors.sort((a: Color, b: Color) => a.pos - b.pos)))
+    return colors.sort((a: Color, b: Color) => a.pos - b.pos)
 }
 export const getGradientLineStyle = (colors: Color[]) => {
     let ordered: Color [] = getOrdered(colors)
