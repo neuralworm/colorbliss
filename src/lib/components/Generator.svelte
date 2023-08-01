@@ -12,6 +12,7 @@
         getOrdered,
         getStyleStringOv,
         getWidth,
+        loadCurrentGradient,
     } from "$lib";
     import code from "../../assets/code.png";
     import tailwind from "../../assets/tailwind.svg";
@@ -23,6 +24,11 @@
     import AddColorButton from "./AddColorButton.svelte";
     import { v4 as uuid } from "uuid";
     import ColorHandle from "./layout/ColorHandle.svelte";
+    // POSITION PRESETS
+    let steps: number[] = [];
+    for (let i = 0; i <= 20; i++) {
+        steps.push(i * 5);
+    }
 
     // COLOR STATE
     let colorOne: string = "#40c9ff";
@@ -83,8 +89,10 @@
         let newColors: Color[] = JSON.parse(JSON.stringify(colors));
         newColors.push(newColor);
         colors = newColors;
-        let newIndex = getOrdered(colors).map((val: Color) => val.id).indexOf(newColor.id)
-        selected = newIndex
+        let newIndex = getOrdered(colors)
+            .map((val: Color) => val.id)
+            .indexOf(newColor.id);
+        selected = newIndex;
     };
     const removeColor = (id: string) => {
         if (colors.length <= 1) return;
@@ -190,7 +198,12 @@
         : null;
     $: lineGradientString = getGradientLineStyle(colors);
 
-    onMount(() => {});
+    onMount(() => {
+        // CHECK FOR SAVE
+        let loaded = loadCurrentGradient();
+        if (!loaded) return;
+        colors = JSON.parse(loaded);
+    });
 
     // UTIL
     const getCanvasLength = () => {
@@ -251,16 +264,16 @@
         <!-- COPY BUTTONS -->
         <div id="copy-buttons" class="flex flex-row gap-2">
             <button
-                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-900 rounded-xl hover:opacity-60"
+                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-200 border-[2px] border-whjite border-opacity-20 rounded-xl hover:opacity-60"
                 on:click={() => copyToClipboard(getTailwindBGString())}
             >
-                <img src={tailwind} class="w-6 invert" alt="" />
+                <img src={tailwind} class="w-6" alt="" />
             </button>
             <button
-                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-900 rounded-xl hover:opacity-60"
+                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-200 border-[2px] border-whjite border-opacity-20 rounded-xl hover:opacity-60"
                 on:click={() => copyToClipboard(getStyleString(gradientType))}
             >
-                <img src={code} class="w-6" alt="" />
+                <img src={code} class="w-6 invert" alt="" />
             </button>
         </div>
     </div>
@@ -268,7 +281,9 @@
     <!-- {styleString} -->
 
     <!-- MAIN DISPLAY -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full container resize-none">
+    <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full container resize-none"
+    >
         <div
             class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0 col-span-1"
         >
@@ -343,7 +358,7 @@
         <!-- OPTION CARD -->
         <div
             id="gradient-options-wrapper"
-            class="border-[1px] border-opacity-40 shadow-md border-indigo-300 w-full bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border"
+            class="border-[2px] border-opacity-20 shadow-md border-black w-full bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border text-lg"
         >
             <div
                 id="gradient-line"
@@ -386,21 +401,39 @@
             </div>
 
             <!-- HANDLE SPECIFIC -->
-            <div class="mt-10">
-                <label for="" class="font-bold">Color</label>
-                <button
-                    class="text-red-400 inline-block float-right p-2 font-semibold"
-                    on:click={() => removeColor(colors[selected].id)}
+            <div class="mt-10 grid grid-cols-2 gap-4">
+                <div>
+                    <div class="mb-2">
+                        <label for="" class="font-bold">Color</label>
+                        <button
+                            class="text-red-400 inline-block float-right font-semibold mr-4"
+                            on:click={() => removeColor(colors[selected].id)}
+                        >
+                            delete
+                        </button>
+                    </div>
+                    <ColorButton
+                        openPicker={() => (picker = !picker)}
+                        setColor={setColorFromInput}
+                        {selected}
+                        labelString={"Color"}
+                        color={colors[selected].hex}
+                    />
+                </div>
+                <div>
+                    <div class="mb-2">
+                        <label for="" class="font-bold">Position</label>
+                    </div>
+                    <select
+                        name=""
+                        id=""
+                        class="rounded-lg px-4 flex items-center justify-center shadow-sm h-10 w-full border-[2px] bg-transparent"
                     >
-                    delete
-                </button>
-                <ColorButton
-                    openPicker={() => (picker = !picker)}
-                    setColor={setColorFromInput}
-                    {selected}
-                    labelString={"Color"}
-                    color={colors[selected].hex}
-                />
+                        {#each steps as step}
+                            <option value={step}>{step}%</option>
+                        {/each}
+                    </select>
+                </div>
             </div>
             {#if picker}
                 <ColorPicker
@@ -442,8 +475,6 @@
                     {/each}
                 </select>
             </div>
-
-           
         </div>
     </div>
     <div class="css-code mt-4 gap-2 flex flex-col w-full">

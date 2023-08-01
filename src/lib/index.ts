@@ -133,3 +133,13 @@ export const getBetweenTwo = (hex1: string, hex2: string, ratio: number): string
     let newHex: string = rgbhex(rgb1.red - redDiff, rgb1.green - greenDiff, rgb1.blue - blueDiff)
     return "#" + newHex
 }
+
+
+// SAVE
+export const saveCurrentGradient = (colors: Color[]) => {
+    localStorage.setItem('colorsCurrent', JSON.stringify(colors))
+}
+export const loadCurrentGradient = (): string|null => {
+    let loaded: string|null = localStorage.getItem('colorsCurrent')
+    return loaded
+}

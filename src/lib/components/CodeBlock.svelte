@@ -5,7 +5,7 @@
 
 </script>
 
-<div class="bg-black text-white flex justify-center p-4 flex-col rounded-lg shadow-md group hover:opacity-70 cursor-pointer relative overflow-hidden">
+<div class="bg-white text-black flex justify-center p-4 flex-col rounded-lg shadow-md group hover:opacity-70 cursor-pointer relative overflow-hidden border-black border-opacity-20 border-[2px]">
     <label for="" class="text-xs opacity-50 ">{label}</label>
     <code class="mt-2 overflow-hidden">
         {code}
