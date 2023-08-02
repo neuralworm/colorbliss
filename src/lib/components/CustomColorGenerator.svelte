@@ -24,6 +24,9 @@
     import AddColorButton from "./AddColorButton.svelte";
     import { v4 as uuid } from "uuid";
     import ColorHandle from "./layout/ColorHandle.svelte";
+    import ModeToggle from "./ModeToggle.svelte";
+    import DefaultColorPallette from "./DefaultColorPallette.svelte";
+    import GradientCanvas from "./GradientCanvas.svelte";
     // POSITION PRESETS
     let steps: number[] = [];
     for (let i = 0; i <= 20; i++) {
@@ -45,9 +48,10 @@
         id: uuid(),
     };
     // MANAGE COLOR LIST
-    let colors: Color[] = [defaultOne, defaultTwo];
+    let customColors: Color[] = [defaultOne, defaultTwo];
+    let defaultColors: DefaultColor = []
     const lineClickHandler = (e: MouseEvent) => {
-        if (colors.length >= 3) return;
+        if (customColors.length >= 3) return;
         // Get click position and get color
         let width = getWidth();
         let trackPositionX = document
@@ -57,7 +61,7 @@
         let diff: number = mouseX - trackPositionX;
         let position: number = Math.round((diff / width) * 100);
         // get side colors
-        let ordered = getOrdered(colors);
+        let ordered = getOrdered(customColors);
         let hex1, hex2, ratio;
         if (position < ordered[0].pos) {
             hex1 = ordered[0].hex;
@@ -80,27 +84,27 @@
         addColor(newHex, position);
     };
     const addColor = (hex: string, position: number) => {
-        if (colors.length >= 3) return;
+        if (customColors.length >= 3) return;
         let newColor: Color = {
             hex: hex,
             pos: position,
             id: uuid(),
         };
-        let newColors: Color[] = JSON.parse(JSON.stringify(colors));
+        let newColors: Color[] = JSON.parse(JSON.stringify(customColors));
         newColors.push(newColor);
-        colors = newColors;
-        let newIndex = getOrdered(colors)
+        customColors = newColors;
+        let newIndex = getOrdered(customColors)
             .map((val: Color) => val.id)
             .indexOf(newColor.id);
         selected = newIndex;
     };
     const removeColor = (id: string) => {
-        if (colors.length <= 1) return;
-        let newColors = JSON.parse(JSON.stringify(colors));
-        let index = colors.map((color: Color) => color.id).indexOf(id);
+        if (customColors.length <= 1) return;
+        let newColors = JSON.parse(JSON.stringify(customColors));
+        let index = customColors.map((color: Color) => color.id).indexOf(id);
         if (index < 0) return;
         newColors.splice(index, 1);
-        colors = newColors;
+        customColors = newColors;
         selected = 0;
     };
     const moveColor = (color: Color, offsetX: number) => {
@@ -109,8 +113,8 @@
         // Round to nearest
         offsetPerc = Math.round(offsetPerc);
         color.pos = offsetPerc;
-        lineGradientString = getGradientLineStyle(colors);
-        styleString = getStyleStringOv(gradientType, colors, direction);
+        lineGradientString = getGradientLineStyle(customColors);
+        styleString = getStyleStringOv(gradientType, customColors, direction);
     };
 
     const createHandleComponent = (color: Color) => {
@@ -122,7 +126,7 @@
                 selected: true,
                 hex: color.hex,
                 select: () =>
-                    (selected = colors
+                    (selected = customColors
                         .map((val: Color) => val.id)
                         .indexOf(color.id)),
                 pos: color.pos,
@@ -130,7 +134,6 @@
             },
         });
     };
-
     let selected: number = 0;
 
     let picker: boolean = false;
@@ -146,7 +149,7 @@
 
     const setGradientType = (string: string) => {
         gradientType = string.toLowerCase();
-        styleString = getStyleStringOv(gradientType, colors, direction);
+        styleString = getStyleStringOv(gradientType, customColors, direction);
     };
     setContext("setGradientType", { setGradientType });
 
@@ -187,22 +190,22 @@
     };
     const getTailwindTextString = (): string => {
         return `bg-clip-text  bg-gradient-to-br from-[${colorOne}] ${
-            colors[2] ? `via-[#${colorTwo}]` : ""
+            customColors[2] ? `via-[#${colorTwo}]` : ""
         } to-[${colorThree}]"`;
     };
 
     // REACTIVE
-    $: styleString = getStyleStringOv(gradientType, colors, direction);
+    $: styleString = getStyleStringOv(gradientType, customColors, direction);
     $: direction
-        ? (styleString = getStyleStringOv(gradientType, colors, direction))
+        ? (styleString = getStyleStringOv(gradientType, customColors, direction))
         : null;
-    $: lineGradientString = getGradientLineStyle(colors);
+    $: lineGradientString = getGradientLineStyle(customColors);
 
     onMount(() => {
         // CHECK FOR SAVE
         let loaded = loadCurrentGradient();
         if (!loaded) return;
-        colors = JSON.parse(loaded);
+        customColors = JSON.parse(loaded);
     });
 
     // UTIL
@@ -226,13 +229,13 @@
         if (validateHTMLColorHex(hexString)) {
             switch (slot) {
                 case 0:
-                    colors[0].hex = valid ? hexString : colors[0].hex;
+                    customColors[0].hex = valid ? hexString : customColors[0].hex;
                     return;
                 case 1:
-                    colors[1].hex = valid ? hexString : colors[1].hex;
+                    customColors[1].hex = valid ? hexString : customColors[1].hex;
                     return;
                 case 2:
-                    colors[2].hex = valid ? hexString : colors[2].hex;
+                    customColors[2].hex = valid ? hexString : customColors[2].hex;
                     return;
                 default:
                     return;
@@ -257,6 +260,7 @@
     id="generator-wrapper"
     class="mx-auto flex items-center justify-center flex-col px-4 container max-w-screen-xl resize-none"
 >
+    
     <div
         id="top-row"
         class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full"
@@ -287,11 +291,8 @@
         <div
             class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0 col-span-1"
         >
-            <div
-                id="gradient-color-canvas"
-                class="absolute shadow-md rounded-xl top-0 bottom-0 left-0 right-0"
-                style="background: {styleString}"
-            />
+            
+            <GradientCanvas styleString={styleString}> </GradientCanvas>
 
             <!-- LEFT DIRECTIONS -->
             <div
@@ -355,6 +356,8 @@
                 />
             </div>
         </div>
+        
+
         <!-- OPTION CARD -->
         <div
             id="gradient-options-wrapper"
@@ -374,16 +377,16 @@
 
                 <!-- COMPONENT TARGET -->
 
-                {#each colors as color}
+                {#each customColors as color}
                     <ColorHandle
                         {moveColor}
                         id={color.id}
                         {color}
                         hex={color.hex}
                         selected={selected ==
-                            colors.map((v) => v.id).indexOf(color.id)}
+                            customColors.map((v) => v.id).indexOf(color.id)}
                         select={() =>
-                            (selected = colors
+                            (selected = customColors
                                 .map((val) => val.id)
                                 .indexOf(color.id))}
                         pos={color.pos}
@@ -407,7 +410,7 @@
                         <label for="" class="font-bold">Color</label>
                         <button
                             class="text-red-400 inline-block float-right font-semibold mr-4"
-                            on:click={() => removeColor(colors[selected].id)}
+                            on:click={() => removeColor(customColors[selected].id)}
                         >
                             delete
                         </button>
@@ -417,7 +420,7 @@
                         setColor={setColorFromInput}
                         {selected}
                         labelString={"Color"}
-                        color={colors[selected].hex}
+                        color={customColors[selected].hex}
                     />
                 </div>
                 <div>
@@ -439,7 +442,7 @@
                 <ColorPicker
                     isInput={false}
                     isOpen={picker}
-                    hex={colors[selected].hex}
+                    hex={customColors[selected].hex}
                     components={{ wrapper: CPickerWrapper }}
                     on:input={(e) => setColorFromInput(e.detail.hex, selected)}
                 />

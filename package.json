@@ -27,6 +27,7 @@
 		"@neodrag/svelte": "^2.0.3",
 		"@types/uuid": "^9.0.2",
 		"@zerodevx/svelte-toast": "^0.9.5",
+		"flowbite-svelte": "^0.40.2",
 		"hex-rgb": "^5.0.0",
 		"rgb-hex": "^4.0.1",
 		"uuid": "^9.0.0",

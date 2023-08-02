@@ -1,0 +1,6 @@
+default colors
+- set color pallette
+- position controls
+- set opacity steps
+
+custom colors
