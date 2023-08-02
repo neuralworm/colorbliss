@@ -9,24 +9,45 @@
         position: number;
         opacity: number;
     }
-    let colors: DefaultColor[] = [];
+    const defaultColorOne: DefaultColor = {
+        color: "indigo",
+        step: 500,
+        position: 5,
+        opacity: 100,
+    };
+    const defaultColorTwo: DefaultColor = {
+        color: "rose",
+        step: 400,
+        position: 95,
+        opacity: 100,
+    };
+    let colors: DefaultColor[] = [defaultColorOne, defaultColorTwo];
     let selected: number = 0;
-    let styleString: string = "linear-gradient(to right, from black, to white)";
+    let types: "linear"|"radial"|"conic"
+    let type: string = "linear"
+    let tailwindString: string = "bg-gradient-to-r from-black to-white";
+
+    $: tailwindString = getTailwindString(colors);
+    const getTailwindString = (colors: DefaultColor[]): string => {
+        let colorOne = colors[0];
+        if (colors.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let colorTwo = colors[1];
+        return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
+    };
 </script>
 
 <section id="default-colors-generator">
-    <div class="default-generator-wrapper max-w-screen-xl mx-auto p-4">
-        <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10 grid-rows-2">
+    <div class="default-generator-wrapper max-w-screen-xl mx-auto p-12">
+        <div
+            class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10 grid-rows-2"
+        >
             <div class="cols-span-1 relative">
-                <GradientCanvas styleString={styleString} />
+                <GradientCanvas {tailwindString} />
             </div>
             <div class="col-span-1 relative">
-                <DefaultColorPallette setColor={()=>{}}></DefaultColorPallette>
+                <DefaultColorPallette setColor={() => {}} />
             </div>
-            <div class="col-span-1">
-                
-            </div>
+            <div class="col-span-1" />
         </div>
-        
     </div>
 </section>

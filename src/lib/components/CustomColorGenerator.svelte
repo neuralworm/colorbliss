@@ -286,10 +286,10 @@
 
     <!-- MAIN DISPLAY -->
     <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 w-full container resize-none"
+        class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4 w-full container resize-none"
     >
         <div
-            class="gradient-block-wrapper mx-2 lg:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 lg:mt-0 col-span-1"
+            class="gradient-block-wrapper mx-2 md:mx-0 min-h-[360px] bg-white shadow-md group rounded-xl relative mt-4 md:mt-0 col-span-1"
         >
             
             <GradientCanvas styleString={styleString}> </GradientCanvas>
@@ -361,7 +361,7 @@
         <!-- OPTION CARD -->
         <div
             id="gradient-options-wrapper"
-            class="border-[2px] border-opacity-20 shadow-md border-black w-full bg-opacity-30 mt-10 lg:mt-0 rounded-xl p-4 box-border text-lg"
+            class="border-[2px] border-opacity-20 shadow-md border-black w-full bg-opacity-30 mt-10 md:mt-0 rounded-xl p-6 box-border text-lg"
         >
             <div
                 id="gradient-line"

@@ -14,14 +14,14 @@
 <main>
     <section
         id="splash"
-        class="p-4 text-center flex flex-col justify-center py-16 relative backdrop-blur-3xl"
+        class="p-4 text-center flex flex-col justify-center py-6  md:py-16 relative backdrop-blur-3xl"
     >
         <div id="splash-content" class="mx-auto p-8">
             <h4 class="tracking-tight font-semibold text-xs md:text-lg">
                 TAILWIND GRADIENT GENERATOR
             </h4>
             <h1
-                class="text-6xl md:text-8xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-br relative from-[#40c9ff] to-[#e81cff] drop-shadow-md overflow-visible px-4 under"
+                class="text-4xl md:text-8xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-br relative from-[#40c9ff] to-[#e81cff] drop-shadow-md overflow-hidden px-4 under"
             >
                 <span class="text-indigo-400">COLOR</span>BLISS
             </h1>

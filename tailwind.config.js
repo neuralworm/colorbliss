@@ -12,6 +12,15 @@ export default {
   safelist: [
     {
       pattern: /bg-./
+    },
+    {
+      pattern: /from-./
+    },
+    {
+      pattern: /via-./
+    },
+    {
+      pattern: /to-./
     }
   ]
 }
