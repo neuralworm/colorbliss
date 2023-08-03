@@ -21,7 +21,7 @@
             class:text-black={mode == "custom"}
             class:bg-white={mode == "custom"}
         >
-            Custom Colors
+            Custom Colors (new)
         </button>
     </div>
 </div>

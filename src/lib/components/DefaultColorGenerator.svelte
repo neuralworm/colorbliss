@@ -1,8 +1,21 @@
 <script lang="ts">
-    import defaultColors from "$lib/data/DefaultColors";
+    import { directionMap } from "$lib";
+import defaultColors from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
+    import CopyButtons from "./CopyButtons.svelte";
+    import DefaultColorHandle from "./DefaultColorHandle.svelte";
     import DefaultColorPallette from "./DefaultColorPallette.svelte";
     import GradientCanvas from "./GradientCanvas.svelte";
+    const linearDirections: string[] = [
+        "bg-gradient-to-r",
+        "bg-gradient-to-tr",
+        "bg-gradient-to-br",
+        "bg-gradient-to-l",
+        "bg-gradient-to-tl",
+        "bg-gradient-to-bl",
+        "bg-gradient-to-t",
+        "bg-gradient-to-b",
+    ];
     interface DefaultColor {
         color: string;
         step: number;
@@ -23,31 +36,100 @@
     };
     let colors: DefaultColor[] = [defaultColorOne, defaultColorTwo];
     let selected: number = 0;
-    let types: "linear"|"radial"|"conic"
-    let type: string = "linear"
+    let types: "linear" | "radial" | "conic";
+    let gradientType: string = "linear";
     let tailwindString: string = "bg-gradient-to-r from-black to-white";
-
+    let lineGradientClasses: string = "bg-white";
+    let currentDirection: "bg-gradient-to-r"
+    // TAILWIND CLASSES FOR GRADIENT
     $: tailwindString = getTailwindString(colors);
+    $: currentDirection ? tailwindString = getTailwindString(colors) : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
+        let colorOne = colors[0];
+        if (colors.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let colorTwo = colors[1];
+        return `${currentDirection} from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
+    };
+    // TAILWIND CLASSES FOR TRACK GRADIENT
+    $: lineGradientClasses = getLineGradientClasses(colors);
+    const getLineGradientClasses = (colors: DefaultColor[]): string => {
         let colorOne = colors[0];
         if (colors.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let colorTwo = colors[1];
         return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
     };
+    const setColor = (color: string, step: number) => {
+        colors[selected].color = color
+        colors[selected].step = step
+    }
 </script>
 
 <section id="default-colors-generator">
     <div class="default-generator-wrapper max-w-screen-xl mx-auto p-12">
-        <div
-            class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10 grid-rows-2"
-        >
-            <div class="cols-span-1 relative">
-                <GradientCanvas {tailwindString} />
+        <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="cols-span-1 relative flex flex-col gap-6">
+                <div class="relative grow min-h-[240px]">
+                    <GradientCanvas {tailwindString} />
+                </div>
+                <div id="gradient-type-controls" class="flex flex-row">
+                    <!-- TYPE SELECT -->
+                    <select class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white" name="" id="" on:change={(e)=> gradientType = e.target.value}>
+                        <option value="linear">linear</option>
+                        <option value="radial">radial</option>
+                        <option value="conic">conic</option>
+                    </select>
+                    <!-- DIRECTION SELECT -->
+                    <select
+                        bind:value={currentDirection}
+                        name=""
+                        id=""
+                        class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                        
+                    >
+                        {#if gradientType == "linear"}
+                            {#each linearDirections as directionString}
+                                <option value={directionString}>{directionMap.get(directionString)}</option>
+                            {/each}
+                        {/if}
+                    </select>
+
+                    <!-- COPY -->
+                    <CopyButtons />
+                </div>
             </div>
-            <div class="col-span-1 relative">
-                <DefaultColorPallette setColor={() => {}} />
+            <div class="col-span-1 relative grid grid-rows-2 gap-6">
+                <DefaultColorPallette setColor={setColor} />
+                <div class="p-6 border-[1px] shadow-md rounded-xl">
+                    <!-- LINE -->
+                    <div
+                        id="gradient-line"
+                        class="gradient-line mt-2 w-full lg:mx-0 relative"
+                    >
+                        <!-- LINE COMPONENT -->
+                        <div
+                            id="gradient-track"
+                            class="h-[14px] w-full rounded-md absolute top-1/2 cursor-copy {lineGradientClasses}"
+                            style="transform: translate3d(0,-50%,0)"
+                            on:mousedown={(e) => {}}
+                        />
+                        <!-- HANDLES -->
+                        {#each colors as color, index}
+                        <DefaultColorHandle select={() => selected = index} color={color} selected={index == selected}></DefaultColorHandle>
+                        {/each}
+                        
+                        <!-- BLANK FOR HEIGHT -->
+                        <button
+                        class="items-center justify-center bg-white rounded-full shadow-md border-[3px] border-opacity-100 flex invisible"
+                        class:border-black={selected}
+                        >
+                        <!-- {defaultPixels} -->
+                        <div
+                        class="handle-body rounded-full h-4 w-4 px-2"
+                        />
+                    </button>
+                </div>
             </div>
-            <div class="col-span-1" />
+            </div>
         </div>
     </div>
 </section>

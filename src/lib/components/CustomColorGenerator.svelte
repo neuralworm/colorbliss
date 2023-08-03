@@ -14,8 +14,6 @@
         getWidth,
         loadCurrentGradient,
     } from "$lib";
-    import code from "../../assets/code.png";
-    import tailwind from "../../assets/tailwind.svg";
     import DirectionButton from "./DirectionButton.svelte";
     import CodeBlock from "./CodeBlock.svelte";
     import ColorButton from "./ColorButton.svelte";
@@ -23,10 +21,11 @@
     import CPickerWrapper from "./CPickerWrapper.svelte";
     import AddColorButton from "./AddColorButton.svelte";
     import { v4 as uuid } from "uuid";
-    import ColorHandle from "./layout/ColorHandle.svelte";
+    import CustomColorHandle from "./layout/CustomColorHandle.svelte";
     import ModeToggle from "./ModeToggle.svelte";
     import DefaultColorPallette from "./DefaultColorPallette.svelte";
     import GradientCanvas from "./GradientCanvas.svelte";
+    import CopyButtons from "./CopyButtons.svelte";
     // POSITION PRESETS
     let steps: number[] = [];
     for (let i = 0; i <= 20; i++) {
@@ -261,26 +260,7 @@
     class="mx-auto flex items-center justify-center flex-col px-4 container max-w-screen-xl resize-none"
 >
     
-    <div
-        id="top-row"
-        class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full"
-    >
-        <!-- COPY BUTTONS -->
-        <div id="copy-buttons" class="flex flex-row gap-2">
-            <button
-                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-200 border-[2px] border-whjite border-opacity-20 rounded-xl hover:opacity-60"
-                on:click={() => copyToClipboard(getTailwindBGString())}
-            >
-                <img src={tailwind} class="w-6" alt="" />
-            </button>
-            <button
-                class="w-10 h-10 shadow-md flex items-center justify-center bg-indigo-200 border-[2px] border-whjite border-opacity-20 rounded-xl hover:opacity-60"
-                on:click={() => copyToClipboard(getStyleString(gradientType))}
-            >
-                <img src={code} class="w-6 invert" alt="" />
-            </button>
-        </div>
-    </div>
+    <CopyButtons></CopyButtons>
 
     <!-- {styleString} -->
 
@@ -378,7 +358,7 @@
                 <!-- COMPONENT TARGET -->
 
                 {#each customColors as color}
-                    <ColorHandle
+                    <CustomColorHandle
                         {moveColor}
                         id={color.id}
                         {color}
