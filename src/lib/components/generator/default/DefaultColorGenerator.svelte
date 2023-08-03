@@ -2,10 +2,10 @@
     import { directionMap } from "$lib";
 import defaultColors from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
-    import CopyButtons from "./CopyButtons.svelte";
+    import CopyButtons from "../../CopyButtons.svelte";
     import DefaultColorHandle from "./DefaultColorHandle.svelte";
     import DefaultColorPallette from "./DefaultColorPallette.svelte";
-    import GradientCanvas from "./GradientCanvas.svelte";
+    import GradientCanvas from "../GradientCanvas.svelte";
     const linearDirections: string[] = [
         "bg-gradient-to-r",
         "bg-gradient-to-tr",
@@ -45,22 +45,36 @@ import defaultColors from "$lib/data/DefaultColors";
     $: tailwindString = getTailwindString(colors);
     $: currentDirection ? tailwindString = getTailwindString(colors) : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
-        let colorOne = colors[0];
-        if (colors.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
-        let colorTwo = colors[1];
-        return `${currentDirection} from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
+        let sorted: DefaultColor[] = getSorted()
+        let colorOne = sorted[0];
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let colorTwo = sorted[1];
+        if (sorted.length == 2) return `${currentDirection} from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
+        let colorThree = sorted[2]
+        return `${currentDirection} from-${colorOne.color}-${colorOne.step} via-${colorTwo.color}-${colorTwo.step} to-${colorThree.color}-${colorThree.step}`
     };
     // TAILWIND CLASSES FOR TRACK GRADIENT
     $: lineGradientClasses = getLineGradientClasses(colors);
     const getLineGradientClasses = (colors: DefaultColor[]): string => {
-        let colorOne = colors[0];
-        if (colors.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
-        let colorTwo = colors[1];
+        let sorted = getSorted()
+        let colorOne = sorted[0];
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let colorTwo = sorted[1];
         return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
     };
     const setColor = (color: string, step: number) => {
         colors[selected].color = color
         colors[selected].step = step
+    }
+    const moveColor = (offset: number) => {
+        let trackWidth = document.getElementById("gradient-line")?.offsetWidth
+        let handleWidth = document.getElementById(`color-handle-${selected}`)?.offsetWidth
+        if(!trackWidth || !handleWidth) return
+        colors[selected].position = Math.floor((offset / (trackWidth - handleWidth)) * 100)
+    }
+    const getSorted = (): DefaultColor[] => {
+        let sortedColors = JSON.parse(JSON.stringify(colors)).sort((a,b)=>a.position-b.position)
+        return sortedColors
     }
 </script>
 
@@ -107,6 +121,7 @@ import defaultColors from "$lib/data/DefaultColors";
                     >
                         <!-- LINE COMPONENT -->
                         <div
+                            role="progressbar"
                             id="gradient-track"
                             class="h-[14px] w-full rounded-md absolute top-1/2 cursor-copy {lineGradientClasses}"
                             style="transform: translate3d(0,-50%,0)"
@@ -114,9 +129,9 @@ import defaultColors from "$lib/data/DefaultColors";
                         />
                         <!-- HANDLES -->
                         {#each colors as color, index}
-                        <DefaultColorHandle select={() => selected = index} color={color} selected={index == selected}></DefaultColorHandle>
+                        <DefaultColorHandle index={index} select={() => selected = index} color={color} selected={index == selected} moveColor={moveColor}></DefaultColorHandle>
                         {/each}
-                        
+                        <!-- {colors[selected].position} -->
                         <!-- BLANK FOR HEIGHT -->
                         <button
                         class="items-center justify-center bg-white rounded-full shadow-md border-[3px] border-opacity-100 flex invisible"

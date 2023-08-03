@@ -1,10 +1,10 @@
 <script lang="ts">
     import Background from "$lib/components/Background.svelte";
-    import DefaultColorGenerator from "$lib/components/DefaultColorGenerator.svelte";
-    import Generator from "$lib/components/CustomColorGenerator.svelte";
+    import DefaultColorGenerator from "$lib/components/generator/default/DefaultColorGenerator.svelte";
+    import Generator from "$lib/components/generator/custom/CustomColorGenerator.svelte";
     import ModeToggle from "$lib/components/ModeToggle.svelte";
     import Examples from "$lib/components/layout/Examples.svelte";
-    import CustomColorGenerator from "$lib/components/CustomColorGenerator.svelte";
+    import CustomColorGenerator from "$lib/components/generator/custom/CustomColorGenerator.svelte";
     let mode: string = "default";
 </script>
 

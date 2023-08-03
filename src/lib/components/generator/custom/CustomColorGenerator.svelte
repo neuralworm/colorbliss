@@ -1,6 +1,6 @@
 <script lang="ts">
     import ColorPicker from "svelte-awesome-color-picker";
-    import OptionButton from "./OptionButton.svelte";
+    import OptionButton from "../../OptionButton.svelte";
     import { onMount, setContext } from "svelte";
     // @ts-ignore
     import { toast, SvelteToast } from "@zerodevx/svelte-toast";
@@ -14,18 +14,18 @@
         getWidth,
         loadCurrentGradient,
     } from "$lib";
-    import DirectionButton from "./DirectionButton.svelte";
-    import CodeBlock from "./CodeBlock.svelte";
-    import ColorButton from "./ColorButton.svelte";
+    import DirectionButton from "../../DirectionButton.svelte";
+    import CodeBlock from "../../CodeBlock.svelte";
+    import ColorButton from "../../ColorButton.svelte";
     import { validateHTMLColorHex } from "validate-color";
-    import CPickerWrapper from "./CPickerWrapper.svelte";
-    import AddColorButton from "./AddColorButton.svelte";
+    import CPickerWrapper from "../../CPickerWrapper.svelte";
+    import AddColorButton from "../../AddColorButton.svelte";
     import { v4 as uuid } from "uuid";
-    import CustomColorHandle from "./layout/CustomColorHandle.svelte";
-    import ModeToggle from "./ModeToggle.svelte";
-    import DefaultColorPallette from "./DefaultColorPallette.svelte";
-    import GradientCanvas from "./GradientCanvas.svelte";
-    import CopyButtons from "./CopyButtons.svelte";
+    import CustomColorHandle from "./CustomColorHandle.svelte";
+    import ModeToggle from "../../ModeToggle.svelte";
+    import DefaultColorPallette from "../default/DefaultColorPallette.svelte";
+    import GradientCanvas from "../GradientCanvas.svelte";
+    import CopyButtons from "../../CopyButtons.svelte";
     // POSITION PRESETS
     let steps: number[] = [];
     for (let i = 0; i <= 20; i++) {

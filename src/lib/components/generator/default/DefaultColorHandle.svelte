@@ -6,6 +6,8 @@
     let defaultPixels: number
     export let selected: boolean
     export let select: Function
+    export let index: number
+    export let moveColor: Function
     onMount(()=>{
         let el = document.getElementById('gradient-track')
         defaultPixels = (el.offsetWidth) * (color.position / 100)
@@ -13,6 +15,7 @@
 </script>
 
 <button
+    id={`color-handle-${index}`}
     use:draggable={{
         axis: "x",
         bounds: "parent",
@@ -21,7 +24,7 @@
             y: 0
         },
         onDrag: ({offsetX, offsetY}) => {
-                // moveColor(color, offsetX)
+                moveColor(offsetX)
         }
     }}
     on:mousedown={(e) => {

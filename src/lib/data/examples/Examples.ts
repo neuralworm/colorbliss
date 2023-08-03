@@ -78,4 +78,16 @@ export const examples: Example[] = [
         via: undefined,
         to: "amber-500",
     },
+    {
+        name: "Trueno",
+        from: "white",
+        via: "stone-400",
+        to: "black",
+    },
+    {
+        name: "Cotton Candy",
+        from: "blue-200",
+        via: undefined,
+        to: "fuchsia-200",
+    },
 ]

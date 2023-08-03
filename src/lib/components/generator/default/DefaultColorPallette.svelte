@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {defaultColors, defaultSteps} from '../data/DefaultColors'
+    import {defaultColors, defaultSteps} from '../../../data/DefaultColors'
     // import { Tooltip } from 'flowbite-svelte';
     export let setColor: Function
     let otherColors: string[] = ["black", "white", "transparent"]
