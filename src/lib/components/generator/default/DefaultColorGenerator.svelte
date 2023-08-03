@@ -44,8 +44,23 @@
     let currentDirection: "bg-gradient-to-r";
     // TAILWIND CLASSES FOR GRADIENT
     $: tailwindString = getTailwindString(colors);
-    $: currentDirection ? (tailwindString = getTailwindString(colors)) : null;
+    $: (currentDirection) ? (tailwindString = getTailwindString(colors)) : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
+        switch (gradientType) {
+            case "linear":
+                return getLinearTailwindString();
+                break;
+            case "radial":
+                return getRadialTailwindString();
+                break;
+            case "conical":
+                return getConicalTailwindString();
+                break;
+            default:
+                return ``;
+        }
+    };
+    const getLinearTailwindString = (): string => {
         let sorted: DefaultColor[] = getSorted();
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
@@ -54,6 +69,24 @@
             return `${currentDirection} from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
         let colorThree = sorted[2];
         return `${currentDirection} from-${colorOne.color}-${colorOne.step} via-${colorTwo.color}-${colorTwo.step} to-${colorThree.color}-${colorThree.step}`;
+    };
+    const getRadialTailwindString = (): string => {
+        let sorted: DefaultColor[] = getSorted();
+        let colorOne = sorted[0];
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))]`
+        baseString = baseString.replace("DIRECTION", currentDirection)
+        let colorTwo = sorted[1]
+        if(sorted.length == 2) return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
+    };
+    const getConicalTailwindString = (): string => {
+        let sorted: DefaultColor[] = getSorted();
+        let colorOne = sorted[0];
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))]`
+        baseString = baseString.replace("DIRECTION", currentDirection)
+        let colorTwo = sorted[1]
+        if(sorted.length == 2) return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
     };
     // TAILWIND CLASSES FOR TRACK GRADIENT
     $: lineGradientClasses = getLineGradientClasses(colors);
@@ -111,27 +144,27 @@
         concialAngles.push(i);
     }
     const conicalPositions: string[] = [
-        "at center",
-        "at top",
-        "at bottom",
-        "at left",
-        "at right",
-        "at top left",
-        "at top right",
-        "at bottom left",
-        "at bottom right",
+        "at_center",
+        "at_top",
+        "at_bottom",
+        "at_left",
+        "at_right",
+        "at_top_left",
+        "at_top_right",
+        "at_bottom_left",
+        "at_bottom_right",
     ];
     // RADIAL
     const radialPositions: string[] = [
-        "eclipse at center",
-        "eclipse at top",
-        "eclipse at bottom",
-        "eclipse at left",
-        "eclipse at right",
-        "eclipse at top left",
-        "eclipse at top right",
-        "eclipse at bottom left",
-        "eclipse at bottom right",
+        "ellipse_at_center",
+        "ellipse_at_top",
+        "ellipse_at_bottom",
+        "ellipse_at_left",
+        "ellipse_at_right",
+        "ellipse_at_top_left",
+        "ellipse_at_top_right",
+        "ellipse_at_bottom_left",
+        "ellipse_at_bottom_right",
     ];
 </script>
 
@@ -142,6 +175,7 @@
                 <div class="relative grow min-h-[240px]">
                     <GradientCanvas {tailwindString} />
                 </div>
+                
                 <div id="gradient-type-controls" class="flex flex-row">
                     <!-- TYPE SELECT -->
                     <select
@@ -172,7 +206,9 @@
                         <!-- CONCIAL -->
                         {#if gradientType == "conical"}
                             {#each conicalPositions as concialPosition}
-                                <option value={concialPosition}>{concialPosition}</option>
+                                <option value={concialPosition}
+                                    >{concialPosition}</option
+                                >
                             {/each}
                         {/if}
                         <!-- {#if gradientType == "conical"}
@@ -234,6 +270,28 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="class-embeddings" class="hidden">
+                <div class="{`
+                bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_right,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))]
+                bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_center,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_top,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_bottom,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_left,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_right,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_top_left,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_bottom_left,_var(--tw-gradient-stops))]
+                bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))]
+                 from-black to-white`} h-8 w-8"></div>
         </div>
     </div>
 </section>

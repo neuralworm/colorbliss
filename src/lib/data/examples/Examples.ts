@@ -50,8 +50,8 @@ export const examples: Example[] = [
     },
     {
         name: "Bavarian Hops",
-        via: "green-800",
-        to: "amber-800",
+        via: "green-700",
+        to: "amber-600",
         from: "lime-700"
     },
     {
@@ -89,5 +89,11 @@ export const examples: Example[] = [
         from: "blue-200",
         via: undefined,
         to: "fuchsia-200",
+    },
+    {
+        name: "Sunset",
+        from: "sky-300",
+        via: "amber-400",
+        to: "orange-600",
     },
 ]
