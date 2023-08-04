@@ -66,9 +66,9 @@
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let colorTwo = sorted[1];
         if (sorted.length == 2)
-            return `${currentDirection} from-${colorOne.color}-${colorOne.step} to-${colorTwo.color}-${colorTwo.step}`;
+            return `${currentDirection} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`;
         let colorThree = sorted[2];
-        return `${currentDirection} from-${colorOne.color}-${colorOne.step} via-${colorTwo.color}-${colorTwo.step} to-${colorThree.color}-${colorThree.step}`;
+        return `${currentDirection} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`;
     };
     const getRadialTailwindString = (): string => {
         let sorted: DefaultColor[] = getSorted();
@@ -78,6 +78,8 @@
         baseString = baseString.replace("DIRECTION", currentDirection)
         let colorTwo = sorted[1]
         if(sorted.length == 2) return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
+        let colorThree = sorted[2]
+        return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
     };
     const getConicalTailwindString = (): string => {
         let sorted: DefaultColor[] = getSorted();
@@ -87,6 +89,9 @@
         baseString = baseString.replace("DIRECTION", currentDirection)
         let colorTwo = sorted[1]
         if(sorted.length == 2) return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
+        let colorThree = sorted[2]
+        return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
+
     };
     // TAILWIND CLASSES FOR TRACK GRADIENT
     $: lineGradientClasses = getLineGradientClasses(colors);
@@ -95,7 +100,9 @@
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let colorTwo = sorted[1];
-        return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`;
+        if(colors.length == 2) return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`;
+        let colorThree = sorted[2]
+        return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
     };
     const setColor = (color: string, step: number) => {
         colors[selected].color = color;
@@ -166,6 +173,17 @@
         "ellipse_at_bottom_left",
         "ellipse_at_bottom_right",
     ];
+    const copyTWCSS = () => {
+        let string: string = getTailwindString(colors)
+        navigator.clipboard.writeText(string)
+    }
+    const copyCSS = () => {
+        let el = document.getElementById('gradient-color-canvas')
+        let style = getComputedStyle(el, "backgroundImage")
+        console.log(style.backgroundImage)
+        if(!style) return
+        navigator.clipboard.writeText(style.backgroundImage)
+    }
 </script>
 
 <section id="default-colors-generator">
@@ -227,11 +245,11 @@
                     </select>
 
                     <!-- COPY -->
-                    <CopyButtons />
+                    <CopyButtons copyCSS={copyCSS} copyTWCSS={copyTWCSS} />
                 </div>
             </div>
-            <div class="col-span-1 relative grid grid-rows-2 gap-6">
-                <DefaultColorPallette {setColor} />
+            <div class="col-span-1 relative grid gap-6">
+                <DefaultColorPallette currentColor={colors[selected]} {setColor} />
                 <div class="p-6 border-[1px] shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
