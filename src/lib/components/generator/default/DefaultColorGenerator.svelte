@@ -194,7 +194,7 @@
                     <GradientCanvas {tailwindString} />
                 </div>
                 
-                <div id="gradient-type-controls" class="flex flex-row">
+                <div id="gradient-type-controls" class="flex flex-row gap-4">
                     <!-- TYPE SELECT -->
                     <select
                         class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"

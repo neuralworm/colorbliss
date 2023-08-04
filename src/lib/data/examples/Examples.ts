@@ -96,4 +96,10 @@ export const examples: Example[] = [
         via: "amber-400",
         to: "orange-600",
     },
+    {
+        name: "Marine Biologist",
+        from: "cyan-200",
+        via: "blue-500",
+        to: "violet-700",
+    },
 ]

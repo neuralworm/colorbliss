@@ -1,5 +1,5 @@
 <script>
-    import ExampleView from "../ExampleView.svelte";
+    import ExampleView from "../examples/ExampleView.svelte";
     import {examples} from "../../data/examples/Examples"
 </script>
 <section id="gradient-examples" class="mx-auto py-16 mt-16">

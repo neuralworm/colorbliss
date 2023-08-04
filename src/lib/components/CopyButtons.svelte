@@ -8,7 +8,7 @@
 
 <div
     id="copy-buttons"
-    class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full"
+    class="flex flex-row items-center justify-center mb-3 gap-4 max-w-full ml-auto"
 >
     <!-- COPY BUTTONS -->
     <div id="copy-buttons" class="flex flex-row gap-2">

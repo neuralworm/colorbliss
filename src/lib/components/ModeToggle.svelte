@@ -13,7 +13,7 @@
             class:text-black={mode == "default"}
             class:bg-white={mode == "default"}
         >
-            TailwWind Colors
+            TailWind Colors
         </button>
         <button class="p-2 px-6 md:px-12 rounded-xl"
             on:click={() => toggleMode()}
