@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Example } from "$lib/data/examples/Examples";
+    import FavoriteButton from "../layout/FavoriteButton.svelte";
 
     export let example: Example
     let exampleString = ""
@@ -17,7 +18,7 @@
 
         </h5>
         <div class="controls">
-            
+            <FavoriteButton active={false}></FavoriteButton>
         </div>
     </div>
     

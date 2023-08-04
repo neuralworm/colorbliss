@@ -1,7 +1,7 @@
 <script lang="ts">
-    let gradientString: string
-    let open: boolean
+    export let gradientString: string
+    export let open: boolean
 </script>
-<section class="w-screen h-screen fixed z-50 {gradientString} translate-y-full transition-all" class:translate-y-0={open}>
+<section id="fullscreen" class="w-screen h-screen fixed z-50 {gradientString} top-0 transition-all" class:-translate-y-full={!open}>
 
 </section>

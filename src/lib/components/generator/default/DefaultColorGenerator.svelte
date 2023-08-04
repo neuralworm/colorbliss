@@ -7,6 +7,7 @@
     import DefaultColorPallette from "./DefaultColorPallette.svelte";
     import GradientCanvas from "../GradientCanvas.svelte";
     import AddColorButton from "$lib/components/AddColorButton.svelte";
+    import FullScreen from "../FullScreen.svelte";
     const linearDirections: string[] = [
         "bg-gradient-to-r",
         "bg-gradient-to-tr",
@@ -184,6 +185,10 @@
         if(!style) return
         navigator.clipboard.writeText(style.backgroundImage)
     }
+
+
+    // FULL SCREEN
+    let fullscreen: boolean = false
 </script>
 
 <section id="default-colors-generator">
@@ -312,4 +317,5 @@
                  from-black to-white`} h-8 w-8"></div>
         </div>
     </div>
+    <FullScreen gradientString={tailwindString} open={fullscreen}></FullScreen>
 </section>
