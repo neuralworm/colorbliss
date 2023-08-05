@@ -18,7 +18,7 @@
 
         </h5>
         <div class="controls">
-            <FavoriteButton active={false}></FavoriteButton>
+            <FavoriteButton gradient={example.name} active={false}></FavoriteButton>
         </div>
     </div>
     

@@ -10,6 +10,7 @@
         <div class="relative h-12 flex items-center justify-center">
             <nav id="navbar" class="flex flex-row items-center gap-4 text-md font-semibold tracking-wide">
                 <a href="/">Generator</a>
+                <a target="" href="/favorites">Favorites</a>
                 <a target="_blank" href="https://github.com/neuralworm">Github</a>
     
             </nav>
