@@ -1,7 +1,6 @@
 <script lang="ts">
     export let styleString: string = "";
     export let tailwindString: string = "";
-
 </script>
 
 {#if styleString !== ""}

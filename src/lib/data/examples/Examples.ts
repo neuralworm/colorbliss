@@ -102,4 +102,10 @@ export const examples: Example[] = [
         via: "blue-500",
         to: "violet-700",
     },
+    {
+        name: "Raspberry Lemonade",
+        from: "yellow-100",
+        via: undefined,
+        to: "rose-400",
+    },
 ]

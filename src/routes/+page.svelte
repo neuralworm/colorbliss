@@ -9,12 +9,14 @@
 </script>
 
 <svelte:head>
-    <!-- <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0"> -->
+    <title>
+        TailwindCSS Gradient Generator - ColorBliss
+    </title>
 </svelte:head>
 <main>
     <section
         id="splash"
-        class="p-4 text-center flex flex-col justify-center py-6  md:py-16 relative backdrop-blur-3xl"
+        class="p-4 text-center flex flex-col justify-center py-6 md:py-16 relative backdrop-blur-3xl"
     >
         <div id="splash-content" class="mx-auto p-8">
             <h4 class="tracking-tight font-semibold text-xs md:text-lg">

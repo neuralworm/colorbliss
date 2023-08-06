@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { directionMap } from "$lib";
+    import { directionMap, getBridgedColor, getSortedDefaultColors} from "$lib";
     import defaultColors from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
     import CopyButtons from "../../CopyButtons.svelte";
@@ -62,7 +62,7 @@
         }
     };
     const getLinearTailwindString = (): string => {
-        let sorted: DefaultColor[] = getSorted();
+        let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let colorTwo = sorted[1];
@@ -72,7 +72,7 @@
         return `${currentDirection} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`;
     };
     const getRadialTailwindString = (): string => {
-        let sorted: DefaultColor[] = getSorted();
+        let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))]`
@@ -83,7 +83,7 @@
         return baseString + ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
     };
     const getConicalTailwindString = (): string => {
-        let sorted: DefaultColor[] = getSorted();
+        let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))]`
@@ -97,7 +97,7 @@
     // TAILWIND CLASSES FOR TRACK GRADIENT
     $: lineGradientClasses = getLineGradientClasses(colors);
     const getLineGradientClasses = (colors: DefaultColor[]): string => {
-        let sorted = getSorted();
+        let sorted = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
         let colorTwo = sorted[1];
@@ -121,12 +121,7 @@
             ) * 5;
         set = false;
     };
-    const getSorted = (): DefaultColor[] => {
-        let sortedColors = JSON.parse(JSON.stringify(colors)).sort(
-            (a, b) => a.position - b.position
-        );
-        return sortedColors;
-    };
+   
     const addColor = (e) => {
         let newColorArray: DefaultColor[] = JSON.parse(JSON.stringify(colors));
         if (colors.length >= 3) return;
@@ -134,10 +129,12 @@
         let handleWidth = document.getElementById(
             `color-handle-${selected}`
         )?.offsetWidth;
+        let clickedPosition = 50
+        let bridgedColor = getBridgedColor(colors, clickedPosition)
         let newColor: DefaultColor = {
-            color: "",
-            step: 50,
-            position: 0,
+            color: bridgedColor.color,
+            step: bridgedColor.step,
+            position: clickedPosition,
             opacity: 1,
         };
         newColorArray.push(newColor);

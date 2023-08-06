@@ -17,10 +17,14 @@
         })
     })
 </script>
+<svelte:head>
+    <title>
+        Favorite Gradients - ColorBliss
+    </title>
+</svelte:head>
 <section id="favorites-page">
     <section id="favorites-head" class="mx-auto max-w-screen-xl">
         <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight py-16">
-
             FAVORITES
         </h1>
     </section>
@@ -30,7 +34,6 @@
         </div>
     {/if}
     <div class="max-w-screen-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-auto mt-24">
-
         {#each favoritedExamples as fav}
         <ExampleView example={fav}></ExampleView>
         {/each}

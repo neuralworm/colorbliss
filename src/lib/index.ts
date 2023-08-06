@@ -2,6 +2,7 @@
 import {toast} from '@zerodevx/svelte-toast'
 import hexrgb from 'hex-rgb'
 import rgbhex from 'rgb-hex'
+import type { DefaultColor } from './data/DefaultColors'
 
 // DIMENSION
 export const getWidth = (): number|undefined => {
@@ -142,4 +143,25 @@ export const saveCurrentGradient = (colors: Color[]) => {
 export const loadCurrentGradient = (): string|null => {
     let loaded: string|null = localStorage.getItem('colorsCurrent')
     return loaded
+}
+
+// SORT TWCSS
+export const getSortedDefaultColors = (colors: DefaultColor[]): DefaultColor[] => {
+    let sortedColors: DefaultColor[] = JSON.parse(JSON.stringify(colors)).sort(
+        (a: DefaultColor, b: DefaultColor) => a.position - b.position
+    );
+    return sortedColors;
+}
+// TAILWIND COLOR BRIDGE
+export const getBridgedColor = (colors: DefaultColor[], position: number): DefaultColor => {
+    let sorted: DefaultColor[] = getSortedDefaultColors(colors)
+    if(sorted.length == 1) return colors[0]
+    if(position < sorted[0].position) return sorted[0]
+    if(position > sorted[0].position && position < sorted[1].position) return{
+        color: "",
+        position: position,
+        opacity: 1,
+        step: 50
+    }
+    return sorted[1]
 }
