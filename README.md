@@ -1,3 +1,3 @@
-This project aims to ease the use of tailwinds gradient classes.
-
-Generate class lists for gradients of multiple types.
+# COLORBLISS
+### Beautiful Tailwind Gradients
+Tool for generating both TailwindCSS gradients via classes or native CSS styles.  Pick from set of premade gradients both both backgrounds and text.
