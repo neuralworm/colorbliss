@@ -15,7 +15,6 @@
     <div class="info  bg-slate-50 p-2 px-4 rounded-lg absolute -bottom-[24px] mx-2 left-2 right-2 shadow-lg border-[1px] border-black/10 font-semibold flex flex-row items-center justify-between group-hover:translate-y-2 transition-all">
         <h5>
             {example.name.toUpperCase()}
-
         </h5>
         <div class="controls">
             <FavoriteButton gradient={example.name} active={false}></FavoriteButton>

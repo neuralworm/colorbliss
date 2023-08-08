@@ -1,3 +1,4 @@
+import { defaultColors, defaultSteps } from './data/DefaultColors';
 // place files you want to import through the `$lib` alias in this folder.
 import {toast} from '@zerodevx/svelte-toast'
 import hexrgb from 'hex-rgb'
@@ -157,11 +158,22 @@ export const getBridgedColor = (colors: DefaultColor[], position: number): Defau
     let sorted: DefaultColor[] = getSortedDefaultColors(colors)
     if(sorted.length == 1) return colors[0]
     if(position < sorted[0].position) return sorted[0]
-    if(position > sorted[0].position && position < sorted[1].position) return{
-        color: "",
-        position: position,
-        opacity: 1,
-        step: 50
-    }
+    if(position > sorted[0].position && position < sorted[1].position){
+        let diff = (sorted[1].position - sorted[0].position)
+        let smallDiff = position - sorted[0].position
+        let fraction = smallDiff / diff
+        // COLOR
+        let colorOneIndex = defaultColors.indexOf(sorted[0].color)
+        let colorTwoIndex = defaultColors.indexOf(sorted[1].color)
+        let midIndex = Math.round((colorTwoIndex - colorOneIndex) * fraction) + colorOneIndex
+        // STEP
+        let midStep = Math.round((sorted[0].step + (fraction * (sorted[1].step - sorted[0].step))) / 100 ) * 100
+        return{
+            color: defaultColors[midIndex],
+            position: position,
+            opacity: 1,
+            step: midStep
+        }
+    } 
     return sorted[1]
 }

@@ -18,7 +18,7 @@
     import CodeBlock from "../../CodeBlock.svelte";
     import ColorButton from "../../ColorButton.svelte";
     import { validateHTMLColorHex } from "validate-color";
-    import CPickerWrapper from "../../CPickerWrapper.svelte";
+    import CPickerWrapper from "./CPickerWrapper.svelte";
     import AddColorButton from "../../AddColorButton.svelte";
     import { v4 as uuid } from "uuid";
     import CustomColorHandle from "./CustomColorHandle.svelte";

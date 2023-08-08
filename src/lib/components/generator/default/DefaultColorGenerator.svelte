@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { directionMap, getBridgedColor, getSortedDefaultColors} from "$lib";
+    import { directionMap, getBridgedColor, getSortedDefaultColors, getWidth} from "$lib";
     import defaultColors from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
     import CopyButtons from "../../CopyButtons.svelte";
@@ -8,6 +8,9 @@
     import GradientCanvas from "../GradientCanvas.svelte";
     import AddColorButton from "$lib/components/AddColorButton.svelte";
     import FullScreen from "../FullScreen.svelte";
+    import CodeBlock from "$lib/components/CodeBlock.svelte";
+    import PositionSelect from "../PositionSelect.svelte";
+    import DeleteColorButton from "../DeleteColorButton.svelte";
     const linearDirections: string[] = [
         "bg-gradient-to-r",
         "bg-gradient-to-tr",
@@ -123,13 +126,17 @@
     };
    
     const addColor = (e) => {
-        let newColorArray: DefaultColor[] = JSON.parse(JSON.stringify(colors));
         if (colors.length >= 3) return;
-        let trackWidth = document.getElementById("gradient-line")?.offsetWidth;
-        let handleWidth = document.getElementById(
-            `color-handle-${selected}`
-        )?.offsetWidth;
-        let clickedPosition = 50
+
+        let newColorArray: DefaultColor[] = JSON.parse(JSON.stringify(colors));
+        let width = getWidth();
+        let trackPositionX = document
+            .getElementById("gradient-track")
+            ?.getBoundingClientRect().left;
+        if(!trackPositionX || !width) return
+        let mouseX = e.clientX;
+        let diff: number = mouseX - trackPositionX;
+        let clickedPosition: number = Math.round((diff / width) * 100);
         let bridgedColor = getBridgedColor(colors, clickedPosition)
         let newColor: DefaultColor = {
             color: bridgedColor.color,
@@ -182,7 +189,11 @@
         if(!style) return
         navigator.clipboard.writeText(style.backgroundImage)
     }
-
+    // POSITION STEPS
+    let positionSteps: number[] = []
+    for(let i = 0; i <= 100; i += 5){
+        positionSteps.push(i)
+    }
 
     // FULL SCREEN
     let fullscreen: boolean = false
@@ -256,8 +267,7 @@
                     <!-- LINE -->
                     <div
                         id="gradient-line"
-                        class="gradient-line mt-2 w-full lg:mx-0 relative"
-                    >
+                        class="gradient-line mt-2 w-full lg:mx-0 relative">
                         <!-- LINE COMPONENT -->
                         <div
                             role="progressbar"
@@ -288,6 +298,13 @@
                             />
                         </button>
                     </div>
+                    <div class="flex flex-row mt-4 items-center justify-between">
+                        <span class="w-12">
+                            {colors[selected].color}-{colors[selected].step}
+                        </span>
+                        <PositionSelect color={colors[selected]} positionSteps={positionSteps} onChange={moveColor}></PositionSelect>
+                        <DeleteColorButton deleteAction={() => {}}></DeleteColorButton>
+                    </div>
                 </div>
             </div>
         </div>
@@ -314,5 +331,9 @@
                  from-black to-white`} h-8 w-8"></div>
         </div>
     </div>
+        <!-- <CodeBlock
+            label={"TAILWIND CSS"}
+            code={"background: " + tailwindString}
+        /> -->
     <FullScreen gradientString={tailwindString} open={fullscreen}></FullScreen>
 </section>

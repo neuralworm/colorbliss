@@ -18,6 +18,13 @@ export const addToFavorites = (gradientTitle: string) => {
     favorites.push(gradientTitle)
     setFavorites(favorites)
 }
+export const removeFavorite = (gradientTitle: string) => {
+    if(!getFavorites()) return
+    let favorites: string[] = getFavorites()!
+    favorites.splice(favorites.indexOf(gradientTitle), 1)
+    setFavorites(favorites)
+    console.log('remove' + gradientTitle)
+}
 export const doesFavoriteExist = (favorites: string[], newFav: string): boolean => {
     if(favorites.includes(newFav)) return true
     return false

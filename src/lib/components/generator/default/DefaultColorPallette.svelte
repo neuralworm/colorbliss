@@ -30,7 +30,7 @@
         {#each defaultColors as color}
             <div class="flex flex-row">
                 {#each defaultSteps as step}
-                    <button aria-roledescription="" class={`bg-${color}-${step} h-4 relative group grow cursor-pointer`} title={`${color}-${step}`} on:click={()=>setColor(color, step)}>
+                    <button id="pallette-{color}-{step}" aria-roledescription="" class={`bg-${color}-${step} h-4 relative group grow cursor-pointer`} title={`${color}-${step}`} on:click={()=>setColor(color, step)}>
                         <div class="absolute top-0 left-0 right-0 bottom-0 border-2 border-transparent " class:group-hover:border-white={step > 400} class:group-hover:border-black={step <= 400}
                             ></div>
                     </button>
