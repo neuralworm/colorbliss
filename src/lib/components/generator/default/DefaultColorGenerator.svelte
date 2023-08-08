@@ -6,7 +6,6 @@
     import DefaultColorHandle from "./DefaultColorHandle.svelte";
     import DefaultColorPallette from "./DefaultColorPallette.svelte";
     import GradientCanvas from "../GradientCanvas.svelte";
-    import AddColorButton from "$lib/components/AddColorButton.svelte";
     import FullScreen from "../FullScreen.svelte";
     import CodeBlock from "$lib/components/CodeBlock.svelte";
     import PositionSelect from "../PositionSelect.svelte";
@@ -144,9 +143,17 @@
             position: clickedPosition,
             opacity: 1,
         };
-        newColorArray.push(newColor);
+        let newLength = newColorArray.push(newColor);
         colors = newColorArray;
+        selected = newLength - 1
     };
+    const deleteColor = () => {
+        if(colors.length <= 1) return
+        let newColors: DefaultColor[] = JSON.parse(JSON.stringify(colors))
+        newColors.splice(selected, 1)
+        colors = newColors
+        selected = 0
+    }
     let set = false;
     $: set;
     // CONICAL
@@ -303,7 +310,7 @@
                             {colors[selected].color}-{colors[selected].step}
                         </span>
                         <PositionSelect color={colors[selected]} positionSteps={positionSteps} onChange={moveColor}></PositionSelect>
-                        <DeleteColorButton deleteAction={() => {}}></DeleteColorButton>
+                        <DeleteColorButton deleteAction={deleteColor}></DeleteColorButton>
                     </div>
                 </div>
             </div>
