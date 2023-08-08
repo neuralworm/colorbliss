@@ -1,4 +1,6 @@
 import { favorites as favoritesState } from "$lib/state/store"
+import { toast } from '@zerodevx/svelte-toast'
+
 export const getFavorites = (): string[]|null => {
     let favoriteStringData: string|null = localStorage.getItem('__favorites')
     if(!favoriteStringData) return null
@@ -17,13 +19,15 @@ export const addToFavorites = (gradientTitle: string) => {
     if(doesFavoriteExist(favorites, gradientTitle)) return
     favorites.push(gradientTitle)
     setFavorites(favorites)
+    toast.push(`${gradientTitle} added to favorites.`)
 }
 export const removeFavorite = (gradientTitle: string) => {
     if(!getFavorites()) return
     let favorites: string[] = getFavorites()!
     favorites.splice(favorites.indexOf(gradientTitle), 1)
     setFavorites(favorites)
-    console.log('remove' + gradientTitle)
+    toast.push(`${gradientTitle} removed from favorites.`)
+
 }
 export const doesFavoriteExist = (favorites: string[], newFav: string): boolean => {
     if(favorites.includes(newFav)) return true
