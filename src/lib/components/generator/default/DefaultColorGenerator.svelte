@@ -17,6 +17,7 @@
     import { toast } from "@zerodevx/svelte-toast";
     import DeleteColorButton from "../DeleteColorButton.svelte";
     import TextToggle from "../TextToggle.svelte";
+
     const linearDirections: string[] = [
         "bg-gradient-to-r",
         "bg-gradient-to-tr",
@@ -80,11 +81,14 @@
 
     // TAILWIND CLASSES FOR GRADIENT
     $: tailwindString = getTailwindString(colors);
-    $: (linearDirection || radialDirection || conicalDirection) ? (tailwindString = getTailwindString(colors)) : null;
+    $: linearDirection || radialDirection || conicalDirection
+        ? (tailwindString = getTailwindString(colors))
+        : null;
     $: gradientType ? (tailwindString = getTailwindString(colors)) : null;
-    $: (textMode || !textMode) ? (tailwindString = getTailwindString(colors)) : null;
+    $: textMode || !textMode
+        ? (tailwindString = getTailwindString(colors))
+        : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
-        console.log('running')
         switch (gradientType) {
             case "linear":
                 return getLinearTailwindString();
@@ -103,19 +107,37 @@
         let direction: string = linearDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        if (sorted.length == 1)
+            return `bg-${colorOne.color}-${colorOne.step} ${
+                textMode ? "text-transparent bg-clip-text" : ""
+            }`;
         let colorTwo = sorted[1];
         if (sorted.length == 2)
-            return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}% ${textMode ? "text-transparent bg-clip-text" : ""}`;
+            return `${direction} from-${colorOne.color}-${colorOne.step} from-${
+                colorOne.position
+            }% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}% ${
+                textMode ? "text-transparent bg-clip-text" : ""
+            }`;
         let colorThree = sorted[2];
-        return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}% ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        return `${direction} from-${colorOne.color}-${colorOne.step} from-${
+            colorOne.position
+        }% via-${colorTwo.color}-${colorTwo.step} via-${
+            colorTwo.position
+        }% to-${colorThree.color}-${colorThree.step} to-${
+            colorThree.position
+        }% ${textMode ? "text-transparent bg-clip-text" : ""}`;
     };
     const getRadialTailwindString = (): string => {
         let direction: string = radialDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
-        let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))] ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        if (sorted.length == 1)
+            return `bg-${colorOne.color}-${colorOne.step} ${
+                textMode ? "text-transparent bg-clip-text" : ""
+            }`;
+        let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))] ${
+            textMode ? "text-transparent bg-clip-text" : ""
+        }`;
         baseString = baseString.replace("DIRECTION", direction);
         let colorTwo = sorted[1];
         if (sorted.length == 2)
@@ -133,8 +155,13 @@
         let direction: string = conicalDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
-        let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))] ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        if (sorted.length == 1)
+            return `bg-${colorOne.color}-${colorOne.step} ${
+                textMode ? "text-transparent bg-clip-text" : ""
+            }`;
+        let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))] ${
+            textMode ? "text-transparent bg-clip-text" : ""
+        }`;
         baseString = baseString.replace("DIRECTION", direction);
         let colorTwo = sorted[1];
         if (sorted.length == 2)
@@ -175,6 +202,10 @@
                 Math.floor((offset / (trackWidth - handleWidth)) * 100) / 5
             ) * 5;
         set = false;
+    };
+    const setColorPosition = (number: number) => {
+        console.log(number);
+        colors[selected].position = number;
     };
 
     const addColor = (e) => {
@@ -234,11 +265,10 @@
     }
 
     // FULL SCREEN
-    let fullscreen: boolean = false
+    let fullscreen: boolean = false;
     // TEXT MODE
-    let textMode: boolean = false
-    let textString: string = "Default String"
-    
+    let textMode: boolean = false;
+    let textString: string = "TAILWINDCSS";
 </script>
 
 <section id="default-colors-generator">
@@ -246,11 +276,18 @@
         <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10">
             <div class="cols-span-1 relative flex flex-col gap-6">
                 <!-- @ts-ignore -->
-                <TextToggle bind:string={textString} toggleText={()=> textMode = !textMode} textActive={textMode}></TextToggle>
+                <TextToggle
+                    bind:string={textString}
+                    toggleText={() => (textMode = !textMode)}
+                    textActive={textMode}
+                />
                 <div class="relative grow min-h-[240px]">
-                    <GradientCanvas textString={textString} bind:tailwindString={tailwindString} textMode={textMode} />
+                    <GradientCanvas
+                        {textString}
+                        bind:tailwindString
+                        {textMode}
+                    />
                 </div>
-                {textString}
 
                 <div id="gradient-type-controls" class="flex flex-row gap-4">
                     <!-- TYPE SELECT -->
@@ -267,22 +304,27 @@
                     <!-- DIRECTION SELECT -->
                     <!-- LINEAR -->
                     {#if gradientType == "linear"}
-                    <select
-                        bind:value={linearDirection}
-                        name=""
-                        id=""
-                        class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                    >
+                        <select
+                            bind:value={linearDirection}
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                        >
                             {#each linearDirections as directionString}
                                 <option value={directionString}
                                     >{directionMap.get(directionString)}</option
                                 >
                             {/each}
                         </select>
-                        {/if}
+                    {/if}
                     <!-- CONICAL -->
                     {#if gradientType == "conical"}
-                        <select name="" id="" class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white" bind:value={conicalDirection}>
+                        <select
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            bind:value={conicalDirection}
+                        >
                             {#each conicalPositions as concialPosition}
                                 <option value={concialPosition}
                                     >{concialPosition}</option
@@ -297,7 +339,12 @@
                     {/if}
                     <!-- RADIAL -->
                     {#if gradientType == "radial"}
-                        <select name="" id="" class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white" bind:value={radialDirection}>
+                        <select
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            bind:value={radialDirection}
+                        >
                             {#each radialPositions as radialPosition}
                                 <option value={radialPosition}
                                     >{radialPosition}</option
@@ -305,16 +352,22 @@
                             {/each}
                         </select>
                     {/if}
-                    <!-- COPY -->
-                    <CopyButtons {copyCSS} {copyTWCSS} />
                 </div>
+                <CodeBlock
+                    label={"TAILWIND CSS"}
+                    code={tailwindString}
+                />
+                <CodeBlock
+                    label={"CSS"}
+                    code={"background: " + "temp"}
+                />
             </div>
             <div class="col-span-1 relative grid gap-6">
                 <DefaultColorPallette
                     currentColor={colors[selected]}
                     {setColor}
                 />
-                <div class="p-6 border-[1px] shadow-md rounded-xl">
+                <div class="p-6 border-2 shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
                         id="gradient-line"
@@ -353,15 +406,19 @@
                     <div
                         class="flex flex-row mt-4 items-center justify-between"
                     >
-                        <span class="w-12">
+                        <span class="inline-block rounded-md p-2 {`bg-${colors[selected].color}-${colors[selected].step}`}">
                             {colors[selected].color}-{colors[selected].step}
                         </span>
-                        <PositionSelect
+                        <!-- <PositionSelect
                             color={colors[selected]}
                             {positionSteps}
-                            onChange={moveColor}
-                        />
+                            onChange={setColorPosition}
+                        /> -->
                         <DeleteColorButton deleteAction={deleteColor} />
+                    </div>
+                    <div class="mt-6">
+                        <!-- COPY -->
+                        <CopyButtons {copyCSS} {copyTWCSS} />
                     </div>
                 </div>
             </div>
@@ -391,9 +448,6 @@
             />
         </div>
     </div>
-    <!-- <CodeBlock
-            label={"TAILWIND CSS"}
-            code={"background: " + tailwindString}
-        /> -->
+
     <FullScreen gradientString={tailwindString} open={fullscreen} />
 </section>

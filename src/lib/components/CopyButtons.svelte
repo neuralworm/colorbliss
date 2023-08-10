@@ -8,23 +8,25 @@
 
 <div
     id="copy-buttons"
-    class="flex flex-row items-center justify-center gap-4 max-w-full ml-auto"
+    class="flex flex-row items-center justify-end gap-4 max-w-full ml-auto"
 >
     <!-- COPY BUTTONS -->
     <div id="copy-buttons" class="flex flex-row gap-2">
         <button
         title={"Copy Tailwind Classes"}
-            class="w-12 h-12 flex items-center justify-center bg-white border-[2px] border-black/20 border-opacity-20 rounded-xl hover:opacity-60"
+            class="p-2 px-4 flex items-center justify-center  border-2 border-white border-opacity-20 rounded-xl hover:opacity-60 gap-4 bg-blue-500 text-white font-semibold"
             on:click={() => copyTWCSS()}
         >
-            <img src={tailwind} class="w-6" alt="" />
+        <span>Copy TWCSS</span>
+            <img src={tailwind} class="w-6 invert" alt="" />
         </button>
         <button
         title={"Copy CSS Style"}
-            class="w-12 h-12 flex items-center justify-center bg-white border-[2px] border-black/20 border-opacity-20 rounded-xl hover:opacity-60"
+            class="p-2 px-4 flex items-center justify-center  border-2 border-white border-opacity-20 rounded-xl hover:opacity-60 gap-4 bg-blue-500 text-white font-semibold"
             on:click={() => copyCSS()}
         >
-            <img src={code} class="w-6 invert" alt="" />
+        <span>Copy CSS</span>
+            <img src={code} class="w-6" alt="" />
         </button>
     </div>
 </div>

@@ -4,12 +4,12 @@
     export let string: string
 </script>
 
-<div class="flex flex-row">
+<div class="flex flex-row rounded-md overflow-hidden">
 
-    <button class="p-2 border-2 rounded-md" on:click={() => toggleText()} disabled={!textActive} class:bg-slate-300={textActive} class:text-white={textActive}>
+    <button class="p-2 border-2" on:click={() => toggleText()} disabled={!textActive} class:bg-slate-300={textActive} class:text-white={textActive}>
         BACKGROUND
     </button>
-    <button class="p-2 border-2 rounded-md" on:click={() => toggleText()} disabled={textActive} class:bg-slate-300={!textActive} class:text-white={!textActive}>
+    <button class="p-2 border-2" on:click={() => toggleText()} disabled={textActive} class:bg-slate-300={!textActive} class:text-white={!textActive}>
         TEXT
     </button>
     {#if textActive}
