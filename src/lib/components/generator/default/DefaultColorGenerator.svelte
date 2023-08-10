@@ -16,6 +16,7 @@
     import PositionSelect from "../PositionSelect.svelte";
     import { toast } from "@zerodevx/svelte-toast";
     import DeleteColorButton from "../DeleteColorButton.svelte";
+    import TextToggle from "../TextToggle.svelte";
     const linearDirections: string[] = [
         "bg-gradient-to-r",
         "bg-gradient-to-tr",
@@ -81,6 +82,7 @@
     $: tailwindString = getTailwindString(colors);
     $: (linearDirection || radialDirection || conicalDirection) ? (tailwindString = getTailwindString(colors)) : null;
     $: gradientType ? (tailwindString = getTailwindString(colors)) : null;
+    $: textMode ? (tailwindString = getTailwindString(colors)) : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
         switch (gradientType) {
             case "linear":
@@ -100,19 +102,19 @@
         let direction: string = linearDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
         let colorTwo = sorted[1];
         if (sorted.length == 2)
-            return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`;
+            return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}% ${textMode ? "text-transparent bg-clip-text" : ""}`;
         let colorThree = sorted[2];
-        return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`;
+        return `${direction} from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}% ${textMode ? "text-transparent bg-clip-text" : ""}`;
     };
     const getRadialTailwindString = (): string => {
         let direction: string = radialDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
-        let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))]`;
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))] ${textMode ? "text-transparent bg-clip-text" : ""}`;
         baseString = baseString.replace("DIRECTION", direction);
         let colorTwo = sorted[1];
         if (sorted.length == 2)
@@ -130,8 +132,8 @@
         let direction: string = conicalDirection;
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
-        let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))]`;
+        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step} ${textMode ? "text-transparent bg-clip-text" : ""}`;
+        let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))] ${textMode ? "text-transparent bg-clip-text" : ""}`;
         baseString = baseString.replace("DIRECTION", direction);
         let colorTwo = sorted[1];
         if (sorted.length == 2)
@@ -231,16 +233,23 @@
     }
 
     // FULL SCREEN
-    let fullscreen: boolean = false;
+    let fullscreen: boolean = false
+    // TEXT MODE
+    let textMode: boolean = false
+    let textString: string = "Default String"
+    
 </script>
 
 <section id="default-colors-generator">
     <div class="default-generator-wrapper max-w-screen-xl mx-auto p-12">
         <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10">
             <div class="cols-span-1 relative flex flex-col gap-6">
+                <!-- @ts-ignore -->
+                <TextToggle bind:string={textString} toggleText={()=> textMode = !textMode} textActive={textMode}></TextToggle>
                 <div class="relative grow min-h-[240px]">
-                    <GradientCanvas {tailwindString} />
+                    <GradientCanvas textString={textString} tailwindString={tailwindString} textMode={textMode} />
                 </div>
+                {textString}
 
                 <div id="gradient-type-controls" class="flex flex-row gap-4">
                     <!-- TYPE SELECT -->
