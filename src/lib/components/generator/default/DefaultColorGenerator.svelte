@@ -82,8 +82,9 @@
     $: tailwindString = getTailwindString(colors);
     $: (linearDirection || radialDirection || conicalDirection) ? (tailwindString = getTailwindString(colors)) : null;
     $: gradientType ? (tailwindString = getTailwindString(colors)) : null;
-    $: textMode ? (tailwindString = getTailwindString(colors)) : null;
+    $: (textMode || !textMode) ? (tailwindString = getTailwindString(colors)) : null;
     const getTailwindString = (colors: DefaultColor[]): string => {
+        console.log('running')
         switch (gradientType) {
             case "linear":
                 return getLinearTailwindString();
@@ -247,7 +248,7 @@
                 <!-- @ts-ignore -->
                 <TextToggle bind:string={textString} toggleText={()=> textMode = !textMode} textActive={textMode}></TextToggle>
                 <div class="relative grow min-h-[240px]">
-                    <GradientCanvas textString={textString} tailwindString={tailwindString} textMode={textMode} />
+                    <GradientCanvas textString={textString} bind:tailwindString={tailwindString} textMode={textMode} />
                 </div>
                 {textString}
 

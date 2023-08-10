@@ -13,6 +13,6 @@
         TEXT
     </button>
     {#if textActive}
-    <input type="text" placeholder="Default String" class="border-2 p-2 ml-3" bind:value={string} >
+    <input type="text" placeholder="Default String" class="border-2 p-2 ml-3" bind:value={string} maxlength="20">
     {/if}
 </div>
