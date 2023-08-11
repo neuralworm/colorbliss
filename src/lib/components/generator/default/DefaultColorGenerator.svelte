@@ -250,6 +250,7 @@
     const copyTWCSS = () => {
         let string: string = getTailwindString(colors);
         navigator.clipboard.writeText(string);
+        toast.push("Tailwind classes copied to clipboard!")
     };
     const copyCSS = () => {
         let el = document.getElementById("gradient-color-canvas");
@@ -257,6 +258,7 @@
         console.log(style.backgroundImage);
         if (!style) return;
         navigator.clipboard.writeText(style.backgroundImage);
+        toast.push("CSS copied to clipboard!")
     };
     // POSITION STEPS
     let positionSteps: number[] = [];

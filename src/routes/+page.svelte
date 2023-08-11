@@ -38,11 +38,11 @@
         {mode}
         toggleMode={() => (mode = mode == "default" ? "custom" : "default")}
     />
-    {#if mode == "default"}
+    <!-- {#if mode == "default"}
         <DefaultColorGenerator />
     {/if}
     {#if mode == "custom"}
         <CustomColorGenerator />
-    {/if}
+    {/if} -->
     <Examples />
 </main>
