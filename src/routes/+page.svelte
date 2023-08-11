@@ -38,10 +38,10 @@
             </p>
         </div>
     </section>
-    <ModeToggle
+    <!-- <ModeToggle
         {mode}
         toggleMode={() => (mode = mode == "default" ? "custom" : "default")}
-    />
+    /> -->
     {#if mode == "default"}
         <DefaultColorGenerator />
     {/if}
