@@ -30,7 +30,7 @@
     on:mousedown={(e) => {
         select()
     }}
-    class="items-center justify-center bg-white rounded-full shadow-md border-[3px]  border-opacity-100 flex absolute"
+    class="items-center justify-center bg-white rounded-full shadow-md border-[3px]  border-opacity-100 flex absolute p-[6px] -top-[6px]"
     class:border-black={selected}
     >
     <!-- {defaultPixels} -->

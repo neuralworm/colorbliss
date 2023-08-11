@@ -355,20 +355,6 @@
                         </select>
                     {/if}
                 </div>
-                <CodeBlock
-                    label={"TAILWIND CSS"}
-                    code={tailwindString}
-                />
-                <CodeBlock
-                    label={"CSS"}
-                    code={"background: " + "temp"}
-                />
-            </div>
-            <div class="col-span-1 relative grid gap-6">
-                <DefaultColorPallette
-                    currentColor={colors[selected]}
-                    {setColor}
-                />
                 <div class="p-6 border-2 shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
@@ -423,6 +409,21 @@
                         <CopyButtons {copyCSS} {copyTWCSS} />
                     </div>
                 </div>
+              
+            </div>
+            <div class="col-span-1 relative grid gap-6">
+                <DefaultColorPallette
+                    currentColor={colors[selected]}
+                    {setColor}
+                />
+                <CodeBlock
+                label={"TAILWIND CSS"}
+                code={tailwindString}
+            />
+            <CodeBlock
+                label={"CSS"}
+                code={"background: " + "temp"}
+            />
             </div>
         </div>
         <div id="class-embeddings" class="hidden">
