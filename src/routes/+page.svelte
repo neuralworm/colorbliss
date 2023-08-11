@@ -5,7 +5,11 @@
     import ModeToggle from "$lib/components/ModeToggle.svelte";
     import Examples from "$lib/components/layout/Examples.svelte";
     import CustomColorGenerator from "$lib/components/generator/custom/CustomColorGenerator.svelte";
-    let mode: string = "default";
+    import { onMount } from "svelte";
+    let mode: string = "";
+    onMount(()=>{
+        mode = "default"
+    })
 </script>
 
 <svelte:head>
@@ -38,11 +42,11 @@
         {mode}
         toggleMode={() => (mode = mode == "default" ? "custom" : "default")}
     />
-    <!-- {#if mode == "default"}
+    {#if mode == "default"}
         <DefaultColorGenerator />
     {/if}
     {#if mode == "custom"}
         <CustomColorGenerator />
-    {/if} -->
+    {/if}
     <Examples />
 </main>
