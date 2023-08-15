@@ -108,4 +108,10 @@ export const examples: Example[] = [
         via: undefined,
         to: "rose-400",
     },
+    {
+        name: "Prize Melon",
+        from: "green-200",
+        via: undefined,
+        to: "rose-500",
+    },
 ]

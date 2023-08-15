@@ -17,6 +17,7 @@
     import { toast } from "@zerodevx/svelte-toast";
     import DeleteColorButton from "../DeleteColorButton.svelte";
     import TextToggle from "../TextToggle.svelte";
+    import ColorSelect from "./ColorSelect.svelte";
 
     const linearDirections: string[] = [
         "bg-gradient-to-r",
@@ -355,11 +356,11 @@
                         </select>
                     {/if}
                 </div>
-                <div class="p-6 border-2 shadow-md rounded-xl">
+                <div class="p-8 border-2 shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
                         id="gradient-line"
-                        class="gradient-line mt-2 w-full lg:mx-0 relative"
+                        class="gradient-line mt-4 w-full lg:mx-0 relative"
                     >
                         <!-- LINE COMPONENT -->
                         <div
@@ -392,11 +393,15 @@
                         </button>
                     </div>
                     <div
-                        class="flex flex-row mt-4 items-center justify-between"
-                    >
-                        <span class="inline-block rounded-md p-2 {`bg-${colors[selected].color}-${colors[selected].step}`}">
-                            {colors[selected].color}-{colors[selected].step}
-                        </span>
+                        class="flex flex-row mt-8 items-center justify-between"
+                    >   
+                    <div>
+                        <p class="font-semibold mb-4">COLOR</p>
+                        <ColorSelect bind:currentColor={colors[selected].color} bind:currentStep={colors[selected].step}></ColorSelect>
+                       
+                        
+                    </div>
+                       
                         <!-- <PositionSelect
                             color={colors[selected]}
                             {positionSteps}
@@ -454,3 +459,4 @@
 
     <FullScreen gradientString={tailwindString} open={fullscreen} />
 </section>
+
