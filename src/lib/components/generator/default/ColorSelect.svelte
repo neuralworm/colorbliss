@@ -2,10 +2,12 @@
     import {defaultColors, defaultSteps} from '../../../data/DefaultColors'
     export let currentColor: string
     export let currentStep: number
+    export let setStep: Function
+    export let setColor: Function
 
 </script>
 <div class="flex flex-row items-center p-2 border-2 rounded-xl">
-    <select name="" id="" value={currentColor}>
+    <select name="" id="" bind:value={currentColor} >
         {#each defaultColors as defColor}
             <option value="{defColor}">{defColor}</option>
         {/each}
@@ -13,7 +15,7 @@
     <span class="inline-block rounded-md p-2">
         -
     </span>
-    <select name="" id="" value={currentStep}>
+    <select name="" id="" bind:value={currentStep}>
         {#each defaultSteps as defStep}
             <option value="{defStep}">{defStep}</option>
         {/each}

@@ -13,7 +13,7 @@
     import GradientCanvas from "../GradientCanvas.svelte";
     import FullScreen from "../FullScreen.svelte";
     import CodeBlock from "$lib/components/CodeBlock.svelte";
-    import PositionSelect from "../PositionSelect.svelte";
+    import PositionSelect from "./PositionSelect.svelte";
     import { toast } from "@zerodevx/svelte-toast";
     import DeleteColorButton from "../DeleteColorButton.svelte";
     import TextToggle from "../TextToggle.svelte";
@@ -204,9 +204,9 @@
             ) * 5;
         set = false;
     };
-    const setColorPosition = (number: number) => {
+    const setHandlePosition = (number: number) => {
         console.log(number);
-        colors[selected].position = number;
+        
     };
 
     const addColor = (e) => {
@@ -251,7 +251,7 @@
     const copyTWCSS = () => {
         let string: string = getTailwindString(colors);
         navigator.clipboard.writeText(string);
-        toast.push("Tailwind classes copied to clipboard!")
+        toast.push("Tailwind classes copied to clipboard!");
     };
     const copyCSS = () => {
         let el = document.getElementById("gradient-color-canvas");
@@ -259,7 +259,7 @@
         console.log(style.backgroundImage);
         if (!style) return;
         navigator.clipboard.writeText(style.backgroundImage);
-        toast.push("CSS copied to clipboard!")
+        toast.push("CSS copied to clipboard!");
     };
     // POSITION STEPS
     let positionSteps: number[] = [];
@@ -394,19 +394,21 @@
                     </div>
                     <div
                         class="flex flex-row mt-8 items-center justify-between"
-                    >   
-                    <div>
-                        <p class="font-semibold mb-4">COLOR</p>
-                        <ColorSelect bind:currentColor={colors[selected].color} bind:currentStep={colors[selected].step}></ColorSelect>
-                       
-                        
-                    </div>
-                       
-                        <!-- <PositionSelect
+                    >
+                        <div>
+                            <p class="font-semibold mb-4">COLOR</p>
+                            <ColorSelect
+                                bind:currentColor={colors[selected].color}
+                                bind:currentStep={colors[selected].step}
+                            />
+                        </div>
+
+                        <PositionSelect
+                            bind:position={colors[selected].position}
                             color={colors[selected]}
                             {positionSteps}
-                            onChange={setColorPosition}
-                        /> -->
+                            onChange={setHandlePosition}
+                        />
                         <DeleteColorButton deleteAction={deleteColor} />
                     </div>
                     <div class="mt-6">
@@ -414,21 +416,14 @@
                         <CopyButtons {copyCSS} {copyTWCSS} />
                     </div>
                 </div>
-              
             </div>
             <div class="col-span-1 relative grid gap-6">
                 <DefaultColorPallette
                     currentColor={colors[selected]}
                     {setColor}
                 />
-                <CodeBlock
-                label={"TAILWIND CSS"}
-                code={tailwindString}
-            />
-            <CodeBlock
-                label={"CSS"}
-                code={"background: " + "temp"}
-            />
+                <CodeBlock label={"TAILWIND CSS"} code={tailwindString} />
+                <CodeBlock label={"CSS"} code={"background: " + "temp"} />
             </div>
         </div>
         <div id="class-embeddings" class="hidden">
@@ -459,4 +454,3 @@
 
     <FullScreen gradientString={tailwindString} open={fullscreen} />
 </section>
-
