@@ -11,7 +11,7 @@
         {/each}
     </select>
     <span class="inline-block rounded-md p-2">
-        -
+        
     </span>
     <select class="p-2 rounded-lg" name="" id="" bind:value={currentStep}>
         {#each defaultSteps as defStep}

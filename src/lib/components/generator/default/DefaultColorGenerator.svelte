@@ -485,3 +485,9 @@
 
     <FullScreen gradientString={tailwindString} open={fullscreen} />
 </section>
+
+<style>
+    select{
+        width: 100%;
+    }
+</style>
