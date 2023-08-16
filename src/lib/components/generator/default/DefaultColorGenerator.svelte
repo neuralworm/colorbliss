@@ -204,9 +204,18 @@
             ) * 5;
         set = false;
     };
-    const setHandlePosition = (number: number) => {
-        console.log(number);
-        
+    const setHandlePosition = () => {
+        // let trackWidth = document.getElementById("gradient-line")?.offsetWidth;
+        // let handle = document.getElementById(
+        //     `color-handle-${selected}`
+        // )
+        // let handleWidth = handle?.offsetWidth;
+        // if (!trackWidth || !handleWidth || !handle) return
+        // let pix = Math.round((trackWidth / 100) * colors[selected].position)
+        // console.log(pix)
+        // handle.style.transform = ""
+        // handle.style.transform = `translate3d(${pix}px, 0px, 0px)`
+        // console.log(handle.style.transform)
     };
 
     const addColor = (e) => {
@@ -292,75 +301,11 @@
                     />
                 </div>
 
-                <div id="gradient-type-controls" class="flex flex-row gap-4">
-                    <!-- TYPE SELECT -->
-                    <select
-                        class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                        name=""
-                        id=""
-                        on:change={(e) => (gradientType = e.target.value)}
-                    >
-                        <option value="linear">linear</option>
-                        <option value="radial">radial</option>
-                        <option value="conical">conical</option>
-                    </select>
-                    <!-- DIRECTION SELECT -->
-                    <!-- LINEAR -->
-                    {#if gradientType == "linear"}
-                        <select
-                            bind:value={linearDirection}
-                            name=""
-                            id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                        >
-                            {#each linearDirections as directionString}
-                                <option value={directionString}
-                                    >{directionMap.get(directionString)}</option
-                                >
-                            {/each}
-                        </select>
-                    {/if}
-                    <!-- CONICAL -->
-                    {#if gradientType == "conical"}
-                        <select
-                            name=""
-                            id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                            bind:value={conicalDirection}
-                        >
-                            {#each conicalPositions as concialPosition}
-                                <option value={concialPosition}
-                                    >{concialPosition}</option
-                                >
-                            {/each}
-                            <!-- {#if gradientType == "conical"}
-                                {#each concialAngles as angle}
-                                <option value={angle}>{angle}</option>
-                                {/each}
-                                {/if} -->
-                        </select>
-                    {/if}
-                    <!-- RADIAL -->
-                    {#if gradientType == "radial"}
-                        <select
-                            name=""
-                            id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                            bind:value={radialDirection}
-                        >
-                            {#each radialPositions as radialPosition}
-                                <option value={radialPosition}
-                                    >{radialPosition}</option
-                                >
-                            {/each}
-                        </select>
-                    {/if}
-                </div>
                 <div class="p-8 border-2 shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
                         id="gradient-line"
-                        class="gradient-line mt-4 w-full lg:mx-0 relative"
+                        class="gradient-line mt-8 w-full lg:mx-0 relative"
                     >
                         <!-- LINE COMPONENT -->
                         <div
@@ -378,6 +323,7 @@
                                 {color}
                                 selected={index == selected}
                                 {moveColor}
+                                bind:position={colors[index].position}
                             />
                         {/each}
                         <!-- {colors[selected].position} -->
@@ -392,24 +338,101 @@
                             />
                         </button>
                     </div>
+                    <div class="mt-4">
+                        <DeleteColorButton deleteAction={deleteColor} />
+
+                    </div>
                     <div
-                        class="flex flex-row mt-8 items-center justify-between"
+                        class="grid grid-cols-1 lg:grid-cols-2 mt-4 items-start gap-4 justify-between"
                     >
-                        <div>
+                        <div class="sm:basis-1/2">
                             <p class="font-semibold mb-4">COLOR</p>
                             <ColorSelect
                                 bind:currentColor={colors[selected].color}
                                 bind:currentStep={colors[selected].step}
                             />
                         </div>
-
-                        <PositionSelect
+                        <div class="sm:basis-1/2">
+                            <p class="font-semibold mb-4">POSITION</p>
+                            <PositionSelect
                             bind:position={colors[selected].position}
                             color={colors[selected]}
                             {positionSteps}
                             onChange={setHandlePosition}
                         />
-                        <DeleteColorButton deleteAction={deleteColor} />
+                        </div>
+                        
+                    </div>
+                    <!-- TYPE AND DIRECTION -->
+                    <div
+                        id="gradient-type-controls"
+                        class="flex flex-row gap-4 mt-8"
+                    >
+                    
+                        <!-- TYPE SELECT -->
+                        <select
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            name=""
+                            id=""
+                            on:change={(e) => (gradientType = e.target.value)}
+                        >
+                            <option value="linear">linear</option>
+                            <option value="radial">radial</option>
+                            <option value="conical">conical</option>
+                        </select>
+                        <!-- DIRECTION SELECT -->
+                        <!-- LINEAR -->
+                        {#if gradientType == "linear"}
+                            <select
+                                bind:value={linearDirection}
+                                name=""
+                                id=""
+                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            >
+                                {#each linearDirections as directionString}
+                                    <option value={directionString}
+                                        >{directionMap.get(
+                                            directionString
+                                        )}</option
+                                    >
+                                {/each}
+                            </select>
+                        {/if}
+                        <!-- CONICAL -->
+                        {#if gradientType == "conical"}
+                            <select
+                                name=""
+                                id=""
+                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                                bind:value={conicalDirection}
+                            >
+                                {#each conicalPositions as concialPosition}
+                                    <option value={concialPosition}
+                                        >{concialPosition}</option
+                                    >
+                                {/each}
+                                <!-- {#if gradientType == "conical"}
+                                    {#each concialAngles as angle}
+                                    <option value={angle}>{angle}</option>
+                                    {/each}
+                                    {/if} -->
+                            </select>
+                        {/if}
+                        <!-- RADIAL -->
+                        {#if gradientType == "radial"}
+                            <select
+                                name=""
+                                id=""
+                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                                bind:value={radialDirection}
+                            >
+                                {#each radialPositions as radialPosition}
+                                    <option value={radialPosition}
+                                        >{radialPosition}</option
+                                    >
+                                {/each}
+                            </select>
+                        {/if}
                     </div>
                     <div class="mt-6">
                         <!-- COPY -->

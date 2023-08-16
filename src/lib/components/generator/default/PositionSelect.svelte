@@ -6,7 +6,7 @@
     export let position: number
 </script>
 <!-- @ts-ignore -->
-<select id="position-select" name="" bind:value={position} class="p-2 px-4 rounded-md bg-transparent border-[1px] border-black/25" on:change={() => onChange()}>
+<select id="position-select" name="" bind:value={position} class="p-2 px-4 rounded-lg bg-transparent border-[1px] border-black/25 w-full" on:change={() => onChange()}>
     {#each positionSteps as step}
         <option value={step}>{step}%</option>
     {/each}

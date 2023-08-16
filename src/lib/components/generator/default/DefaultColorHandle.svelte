@@ -3,15 +3,30 @@
     import { draggable } from "@neodrag/svelte";
     import type { DefaultColor } from "$lib/data/DefaultColors";
     export let color: DefaultColor
-    let defaultPixels: number
+    let currentPixelOffset: number
     export let selected: boolean
     export let select: Function
     export let index: number
     export let moveColor: Function
+    export let position: number
     onMount(()=>{
-        let el = document.getElementById('gradient-track')
-        defaultPixels = (el.offsetWidth) * (color.position / 100)
+        let trackWidth = document.getElementById("gradient-line")?.offsetWidth;
+        let handleWidth = document.getElementById(
+            `color-handle-${index}`
+        )?.offsetWidth;
+        currentPixelOffset = Math.round(position * (trackWidth! / 100) - (handleWidth! / 2))
+        console.log(handleWidth)
     })
+    export const setPosition = () => {
+        // if(position % 5 == 0) return
+        let trackWidth = document.getElementById("gradient-line")?.offsetWidth;
+        let handleWidth = document.getElementById(
+            `color-handle-${index}`
+        )?.offsetWidth;
+        currentPixelOffset = Math.round(position * (trackWidth! / 100) - (handleWidth! / 2))
+        console.log(handleWidth)
+    }
+    $: position ? setPosition() : null;
 </script>
 
 <button
@@ -20,7 +35,7 @@
         axis: "x",
         bounds: "parent",
         position: {
-            x: defaultPixels,
+            x: currentPixelOffset,
             y: 0
         },
         onDrag: ({offsetX, offsetY}) => {
@@ -37,6 +52,9 @@
     <div
         class="handle-body rounded-full h-4 w-4 px-2 {`bg-${color.color}-${color.step}`}"
     />
+    <!-- <div>
+        {position}
+    </div> -->
     
 </button>
 
