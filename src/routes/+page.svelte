@@ -7,6 +7,7 @@
     import CustomColorGenerator from "$lib/components/generator/custom/CustomColorGenerator.svelte";
     import { onMount } from "svelte";
     let mode: string = "";
+    let gradientString: string
     onMount(()=>{
         mode = "default"
     })
@@ -27,7 +28,7 @@
                 TAILWIND GRADIENT GENERATOR
             </h4>
             <h1
-                class="text-4xl md:text-7xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-br relative from-[#40c9ff] to-[#e81cff] drop-shadow-md overflow-hidden px-4 under"
+                class="text-4xl md:text-7xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-br relative  drop-shadow-md overflow-hidden px-4 under {gradientString}"
             >
                 <span class="text-black">GRADIENT</span>TAILOR
             </h1>
@@ -43,7 +44,7 @@
         toggleMode={() => (mode = mode == "default" ? "custom" : "default")}
     /> -->
     {#if mode == "default"}
-        <DefaultColorGenerator />
+        <DefaultColorGenerator bind:tailwindString={gradientString}  />
     {/if}
     {#if mode == "custom"}
         <CustomColorGenerator />

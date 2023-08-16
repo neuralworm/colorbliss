@@ -74,7 +74,7 @@
     let selected: number = 0;
     let types: "linear" | "radial" | "conical";
     let gradientType: string = "linear";
-    let tailwindString: string = "bg-gradient-to-r from-black to-white";
+    export let tailwindString: string = "bg-gradient-to-r from-black to-white";
     let lineGradientClasses: string = "bg-white";
     let linearDirection: string = linearDirections[0];
     let radialDirection: string = radialPositions[0];
@@ -366,11 +366,13 @@
                     <!-- TYPE AND DIRECTION -->
                     <div
                         id="gradient-type-controls"
-                        class="flex flex-row gap-4 mt-8"
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8"
                     >
                     
                         <!-- TYPE SELECT -->
-                        <select
+                        <div>
+                            <p class="font-semibold mb-4">TYPE</p>
+                            <select
                             class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
                             name=""
                             id=""
@@ -380,59 +382,65 @@
                             <option value="radial">radial</option>
                             <option value="conical">conical</option>
                         </select>
+                        </div>
+                        
                         <!-- DIRECTION SELECT -->
-                        <!-- LINEAR -->
+                        <div>
+                            <p class="font-semibold mb-4">DIRECTION</p>
+                             <!-- LINEAR -->
                         {#if gradientType == "linear"}
-                            <select
-                                bind:value={linearDirection}
-                                name=""
-                                id=""
-                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                            >
-                                {#each linearDirections as directionString}
-                                    <option value={directionString}
-                                        >{directionMap.get(
-                                            directionString
-                                        )}</option
-                                    >
+                        <select
+                            bind:value={linearDirection}
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                        >
+                            {#each linearDirections as directionString}
+                                <option value={directionString}
+                                    >{directionMap.get(
+                                        directionString
+                                    )}</option
+                                >
+                            {/each}
+                        </select>
+                    {/if}
+                    <!-- CONICAL -->
+                    {#if gradientType == "conical"}
+                        <select
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            bind:value={conicalDirection}
+                        >
+                            {#each conicalPositions as concialPosition}
+                                <option value={concialPosition}
+                                    >{concialPosition}</option
+                                >
+                            {/each}
+                            <!-- {#if gradientType == "conical"}
+                                {#each concialAngles as angle}
+                                <option value={angle}>{angle}</option>
                                 {/each}
-                            </select>
-                        {/if}
-                        <!-- CONICAL -->
-                        {#if gradientType == "conical"}
-                            <select
-                                name=""
-                                id=""
-                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                                bind:value={conicalDirection}
-                            >
-                                {#each conicalPositions as concialPosition}
-                                    <option value={concialPosition}
-                                        >{concialPosition}</option
-                                    >
-                                {/each}
-                                <!-- {#if gradientType == "conical"}
-                                    {#each concialAngles as angle}
-                                    <option value={angle}>{angle}</option>
-                                    {/each}
-                                    {/if} -->
-                            </select>
-                        {/if}
-                        <!-- RADIAL -->
-                        {#if gradientType == "radial"}
-                            <select
-                                name=""
-                                id=""
-                                class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
-                                bind:value={radialDirection}
-                            >
-                                {#each radialPositions as radialPosition}
-                                    <option value={radialPosition}
-                                        >{radialPosition}</option
-                                    >
-                                {/each}
-                            </select>
-                        {/if}
+                                {/if} -->
+                        </select>
+                    {/if}
+                    <!-- RADIAL -->
+                    {#if gradientType == "radial"}
+                        <select
+                            name=""
+                            id=""
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            bind:value={radialDirection}
+                        >
+                            {#each radialPositions as radialPosition}
+                                <option value={radialPosition}
+                                    >{radialPosition}</option
+                                >
+                            {/each}
+                        </select>
+                    {/if}
+                        </div>
+                       
                     </div>
                     <div class="mt-6">
                         <!-- COPY -->
