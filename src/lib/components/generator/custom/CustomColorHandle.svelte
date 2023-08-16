@@ -10,6 +10,7 @@ import { draggable } from "@neodrag/svelte";
     export let moveColor: Function
     
     let defaultPixels: number
+    
     onMount(()=>{
         let el = document.getElementById('gradient-track')
         let handle = document.getElementById(`color-handle-${id}`)

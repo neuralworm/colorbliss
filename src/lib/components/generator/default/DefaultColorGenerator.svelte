@@ -5,7 +5,7 @@
         getSortedDefaultColors,
         getWidth,
     } from "$lib";
-    import defaultColors from "$lib/data/DefaultColors";
+    import defaultColors, { specialColors } from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
     import CopyButtons from "../../CopyButtons.svelte";
     import DefaultColorHandle from "./DefaultColorHandle.svelte";
@@ -109,22 +109,22 @@
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1)
-            return `bg-${colorOne.color}-${colorOne.step} ${
+            return `bg-${getColorString(colorOne)} ${
                 textMode ? "text-transparent bg-clip-text" : ""
             }`;
         let colorTwo = sorted[1];
         if (sorted.length == 2)
-            return `${direction} from-${colorOne.color}-${colorOne.step} from-${
+            return `${direction} from-${getColorString(colorOne)} from-${
                 colorOne.position
-            }% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}% ${
+            }% to-${getColorString(colorTwo)} to-${colorTwo.position}% ${
                 textMode ? "text-transparent bg-clip-text" : ""
             }`;
         let colorThree = sorted[2];
-        return `${direction} from-${colorOne.color}-${colorOne.step} from-${
+        return `${direction} from-${getColorString(colorOne)} from-${
             colorOne.position
-        }% via-${colorTwo.color}-${colorTwo.step} via-${
+        }% via-${getColorString(colorTwo)} via-${
             colorTwo.position
-        }% to-${colorThree.color}-${colorThree.step} to-${
+        }% to-${getColorString(colorThree)} to-${
             colorThree.position
         }% ${textMode ? "text-transparent bg-clip-text" : ""}`;
     };
@@ -133,7 +133,7 @@
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1)
-            return `bg-${colorOne.color}-${colorOne.step} ${
+            return `bg-${getColorString(colorOne)} ${
                 textMode ? "text-transparent bg-clip-text" : ""
             }`;
         let baseString: string = `bg-[radial-gradient(DIRECTION,_var(--tw-gradient-stops))] ${
@@ -144,12 +144,12 @@
         if (sorted.length == 2)
             return (
                 baseString +
-                ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
+                ` from-${getColorString(colorOne)} from-${colorOne.position}% to-${getColorString(colorTwo)} to-${colorTwo.position}%`
             );
         let colorThree = sorted[2];
         return (
             baseString +
-            ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
+            ` from-${getColorString(colorOne)} from-${colorOne.position}% via-${getColorString(colorTwo)} via-${colorTwo.position}% to-${getColorString(colorThree)} to-${colorThree.position}%`
         );
     };
     const getConicalTailwindString = (): string => {
@@ -157,7 +157,7 @@
         let sorted: DefaultColor[] = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
         if (sorted.length == 1)
-            return `bg-${colorOne.color}-${colorOne.step} ${
+            return `bg-${getColorString(colorOne)} ${
                 textMode ? "text-transparent bg-clip-text" : ""
             }`;
         let baseString = `bg-[conic-gradient(DIRECTION,_var(--tw-gradient-stops))] ${
@@ -168,25 +168,29 @@
         if (sorted.length == 2)
             return (
                 baseString +
-                ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`
+                ` from-${getColorString(colorOne)} from-${colorOne.position}% to-${getColorString(colorTwo)} to-${colorTwo.position}%`
             );
         let colorThree = sorted[2];
         return (
             baseString +
-            ` from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`
+            ` from-${getColorString(colorOne)} from-${colorOne.position}% via-${getColorString(colorTwo)} via-${colorTwo.position}% to-${getColorString(colorThree)} to-${colorThree.position}%`
         );
     };
+    const getColorString = (color: DefaultColor): string => {
+        if(specialColors.includes(color.color)) return color.color
+        return `${color.color}-${color.step}`
+    }
     // TAILWIND CLASSES FOR TRACK GRADIENT
     $: lineGradientClasses = getLineGradientClasses(colors);
     const getLineGradientClasses = (colors: DefaultColor[]): string => {
         let sorted = getSortedDefaultColors(colors);
         let colorOne = sorted[0];
-        if (sorted.length == 1) return `bg-${colorOne.color}-${colorOne.step}`;
+        if (sorted.length == 1) return `bg-${getColorString(colorOne)}`;
         let colorTwo = sorted[1];
         if (colors.length == 2)
-            return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% to-${colorTwo.color}-${colorTwo.step} to-${colorTwo.position}%`;
+            return `bg-gradient-to-r from-${getColorString(colorOne)} from-${colorOne.position}% to-${getColorString(colorTwo)} to-${colorTwo.position}%`;
         let colorThree = sorted[2];
-        return `bg-gradient-to-r from-${colorOne.color}-${colorOne.step} from-${colorOne.position}% via-${colorTwo.color}-${colorTwo.step} via-${colorTwo.position}% to-${colorThree.color}-${colorThree.step} to-${colorThree.position}%`;
+        return `bg-gradient-to-r from-${getColorString(colorOne)} from-${colorOne.position}% via-${getColorString(colorTwo)} via-${colorTwo.position}% to-${getColorString(colorThree)} to-${colorThree.position}%`;
     };
     const setColor = (color: string, step: number) => {
         colors[selected].color = color;

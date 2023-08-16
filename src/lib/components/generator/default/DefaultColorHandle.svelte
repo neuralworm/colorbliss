@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { draggable } from "@neodrag/svelte";
-    import type { DefaultColor } from "$lib/data/DefaultColors";
+    import { specialColors, type DefaultColor } from "$lib/data/DefaultColors";
     export let color: DefaultColor
     let currentPixelOffset: number
     export let selected: boolean
@@ -27,6 +27,10 @@
         console.log(handleWidth)
     }
     $: position ? setPosition() : null;
+    const getColorString = (color: DefaultColor): string => {
+        if(specialColors.includes(color.color)) return color.color
+        return `${color.color}-${color.step}`
+    }
 </script>
 
 <button
@@ -50,7 +54,7 @@
     >
     <!-- {defaultPixels} -->
     <div
-        class="handle-body rounded-full h-4 w-4 px-2 {`bg-${color.color}-${color.step}`}"
+        class="handle-body rounded-full h-4 w-4 px-2 {`bg-${getColorString(color)}`}"
     />
     <!-- <div>
         {position}

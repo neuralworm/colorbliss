@@ -7,3 +7,5 @@ export interface DefaultColor {
     position: number;
     opacity: number;
 }
+
+export const specialColors: string[] = ["black", "white", "transparent"]
