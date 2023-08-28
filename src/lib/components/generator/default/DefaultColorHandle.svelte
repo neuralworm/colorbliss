@@ -26,7 +26,7 @@
         currentPixelOffset = Math.round(position * (trackWidth! / 100) - (handleWidth! / 2))
         console.log(handleWidth)
     }
-    $: position ? setPosition() : null;
+    // $: position ? setPosition() : null;
     const getColorString = (color: DefaultColor): string => {
         if(specialColors.includes(color.color)) return color.color
         return `${color.color}-${color.step}`

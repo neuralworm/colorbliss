@@ -33,7 +33,7 @@
                 <span class="text-black">GRADIENT</span>TAILOR
             </h1>
             <p
-                class="mt-12 max-w-md mx-auto tracking-wider text-sm font-semibold md:text-2xl opacity-50"
+                class="mt-6 md:mt-12 max-w-md mx-auto tracking-wider text-sm font-semibold md:text-2xl opacity-50"
             >
                 Beautiful Tailwind Gradients
             </p>

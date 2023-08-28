@@ -18,6 +18,7 @@
     import DeleteColorButton from "../DeleteColorButton.svelte";
     import TextToggle from "../TextToggle.svelte";
     import ColorSelect from "./ColorSelect.svelte";
+    import Randomize from "./Randomize.svelte";
 
     const linearDirections: string[] = [
         "bg-gradient-to-r",
@@ -285,10 +286,11 @@
     // TEXT MODE
     let textMode: boolean = false;
     let textString: string = "TAILWINDCSS";
+
 </script>
 
 <section id="default-colors-generator">
-    <div class="default-generator-wrapper max-w-screen-xl mx-auto p-12">
+    <div class="default-generator-wrapper max-w-screen-xl mx-auto p-4 md:p-12">
         <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10">
             <div class="cols-span-1 relative flex flex-col gap-6">
                 <!-- @ts-ignore -->
@@ -446,7 +448,9 @@
                         </div>
                        
                     </div>
-                    <div class="mt-6">
+                    <div class="mt-10 grid grid-cols-2 gap-4">
+                        <!-- RANDOMIZER -->
+                        <Randomize></Randomize>
                         <!-- COPY -->
                         <CopyButtons {copyCSS} {copyTWCSS} />
                     </div>
