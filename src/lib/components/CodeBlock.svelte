@@ -1,10 +1,12 @@
 <script lang="ts">
-    import copy from "../../assets/copy.png";
+    import { SvelteToast } from "@zerodevx/svelte-toast";
+import copyIcon from "../../assets/copy.png";
     export let code: string;
     export let label: string;
+    export let copy: Function
 </script>
 
-<div class="bg-black/30 rounded-lg overflow-hidden justify-between w-full group hover:opacity-70 cursor-pointer ">
+<button class="bg-black/30 rounded-lg overflow-hidden justify-between w-full group hover:opacity-70 cursor-pointer " on:click={() => copy()}>
     <div
         class="font-mono flex justify-center p-4 flex-col relative shadow-lg"
     >
@@ -14,6 +16,6 @@
         </code>
     </div>
     <div class="bg-cyan-600 h-8 flex items-center justify-center">
-        <img src={copy} class="invert w-4" width={32} alt="" />
+        <img src={copyIcon} class="invert w-4" width={32} alt="" />
     </div>
-</div>
+</button>

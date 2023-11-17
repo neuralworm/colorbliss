@@ -19,6 +19,7 @@
     import TextToggle from "../TextToggle.svelte";
     import ColorSelect from "./ColorSelect.svelte";
     import Randomize from "./Randomize.svelte";
+    import { onMount } from "svelte";
 
     const linearDirections: string[] = [
         "bg-gradient-to-r",
@@ -267,13 +268,22 @@
         toast.push("Tailwind classes copied to clipboard!");
     };
     const copyCSS = () => {
+        console.log('f')
         let el = document.getElementById("gradient-color-canvas");
-        let style = getComputedStyle(el, "backgroundImage");
-        console.log(style.backgroundImage);
+        let style = getCSSBackgroundString()
+        console.log(style);
         if (!style) return;
-        navigator.clipboard.writeText(style.backgroundImage);
+        navigator.clipboard.writeText(style);
         toast.push("CSS copied to clipboard!");
     };
+    const getCSSBackgroundString = (): string => {
+        let el = document.getElementById("gradient-color-canvas");
+        if(!el) return ""
+        let style = getComputedStyle(el, "backgroundImage");
+        return `background-image: ${style.backgroundImage}`
+    }
+    let cssString: string = ""
+    $: tailwindString ? cssString = getCSSBackgroundString() : null
     // POSITION STEPS
     let positionSteps: number[] = [];
     for (let i = 0; i <= 100; i += 5) {
@@ -286,6 +296,10 @@
     let textMode: boolean = false;
     let textString: string = "TAILWINDCSS";
 
+
+    onMount(()=>{
+        cssString = getCSSBackgroundString()
+    })
 </script>
 
 <section id="default-colors-generator">
@@ -460,8 +474,8 @@
                     currentColor={colors[selected]}
                     {setColor}
                 />
-                <CodeBlock label={"TAILWIND CSS"} code={tailwindString} />
-                <CodeBlock label={"CSS"} code={"background: " + "temp"} />
+                <CodeBlock copy={copyTWCSS} label={"TAILWIND CSS"} code={tailwindString} />
+                <CodeBlock copy={copyCSS} label={"CSS"} code={cssString} />
             </div>
         </div>
         <div id="class-embeddings" class="hidden">
