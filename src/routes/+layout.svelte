@@ -12,6 +12,9 @@ import Navbar from "$lib/components/layout/Navbar.svelte";
     }
 </script>
 <Navbar></Navbar>
-<slot />
-<SvelteToast {options} />
+<div class="min-h-screen">
+
+    <slot />
+    <SvelteToast {options} />
+</div>
 <Footer></Footer>

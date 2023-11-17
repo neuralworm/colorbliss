@@ -62,6 +62,8 @@
                         class={`bg-${color}-${step} w-10 h-10 relative group grow cursor-pointer rounded-md shadow-sm`}
                         title={`${color}-${step}`}
                         on:click={() => setColor(color, step)}
+                        class:scale-110={`${color}-${step}` == `${currentColor.color}-${currentColor.step}`}
+                        class:outline={`${color}-${step}` == `${currentColor.color}-${currentColor.step}`}
                     >
                         <div
                             class="absolute top-0 left-0 right-0 bottom-0 border-2 border-transparent rounded-md"

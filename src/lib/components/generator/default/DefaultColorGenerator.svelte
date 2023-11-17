@@ -73,7 +73,6 @@
     };
     let colors: DefaultColor[] = [defaultColorOne, defaultColorTwo];
     let selected: number = 0;
-    let types: "linear" | "radial" | "conical";
     let gradientType: string = "linear";
     export let tailwindString: string = "bg-gradient-to-r from-black to-white";
     let lineGradientClasses: string = "bg-white";

@@ -30,7 +30,7 @@
             <h1
                 class="text-4xl md:text-7xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-br relative  drop-shadow-md overflow-hidden px-4 under {gradientString}"
             >
-                <span class="text-black">GRADIENT</span>TAILOR
+                <span class="text-white">GRADIENT</span>TAILOR
             </h1>
             <p
                 class="mt-6 md:mt-12 max-w-md mx-auto tracking-wider text-sm font-semibold md:text-2xl opacity-50"

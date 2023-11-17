@@ -23,7 +23,7 @@
     </title>
 </svelte:head>
 <section id="favorites-page">
-    <section id="favorites-head" class="mx-auto max-w-screen-xl p-6">
+    <section id="favorites-head" class="mx-auto max-w-screen-xl p-6 h-full">
         <h1 class="text-5xl md:text-5xl font-extrabold tracking-tight py-16">
             FAVORITES
         </h1>
