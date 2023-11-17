@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex flex-row items-center rounded-xl">
-    <select class="p-2 rounded-lg" name="" id="" bind:value={currentColor}>
+    <select class="p-2 rounded-lg bg-black/30" name="" id="" bind:value={currentColor}>
         <!-- NORMAL COLORS -->
         {#each defaultColors as defColor}
             <option value={defColor}>{defColor}</option>
@@ -20,7 +20,7 @@
         {/each}
     </select>
     <span class="inline-block rounded-md p-2" />
-    <select class="p-2 rounded-lg" name="" id="" bind:value={currentStep}>
+    <select class="p-2 rounded-lg bg-black/30" name="" id="" bind:value={currentStep}>
         <!-- COLOR RANGES -->
         {#if !specialColors.includes(currentColor)}
             {#each defaultSteps as defStep}
@@ -35,7 +35,6 @@
 
 <style>
     select {
-        background-color: white;
         border-color: rgba(0, 0, 0, 0.14);
         border-width: 2px;
     }

@@ -18,7 +18,7 @@
         TailwindCSS Gradient Generator - ColorBliss
     </title>
 </svelte:head>
-<main>
+<main class="">
     <section
         id="splash"
         class="p-4 text-center flex flex-col justify-center py-6 md:py-16 relative backdrop-blur-3xl"

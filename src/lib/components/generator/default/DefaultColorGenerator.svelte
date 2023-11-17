@@ -291,7 +291,7 @@
 
 <section id="default-colors-generator">
     <div class="default-generator-wrapper max-w-screen-xl mx-auto p-4 md:p-12">
-        <div class="grid-container grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div class="grid-container grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div class="cols-span-1 relative flex flex-col gap-6">
                 <!-- @ts-ignore -->
                 <TextToggle
@@ -307,7 +307,7 @@
                     />
                 </div>
 
-                <div class="p-8 border-2 shadow-md rounded-xl">
+                <div class="p-8 bg-black/30 shadow-md rounded-xl">
                     <!-- LINE -->
                     <div
                         id="gradient-line"
@@ -379,7 +379,7 @@
                         <div>
                             <p class="font-semibold mb-4">TYPE</p>
                             <select
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-black/30"
                             name=""
                             id=""
                             on:change={(e) => (gradientType = e.target.value)}
@@ -399,7 +399,7 @@
                             bind:value={linearDirection}
                             name=""
                             id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-black/30"
                         >
                             {#each linearDirections as directionString}
                                 <option value={directionString}
@@ -452,7 +452,7 @@
                         <!-- RANDOMIZER -->
                         <Randomize></Randomize>
                         <!-- COPY -->
-                        <CopyButtons {copyCSS} {copyTWCSS} />
+                        <!-- <CopyButtons {copyCSS} {copyTWCSS} /> -->
                     </div>
                 </div>
             </div>

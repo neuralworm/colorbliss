@@ -2,7 +2,7 @@
     import Logo from "../Logo.svelte";
     import github from '../../../assets/github-mark.svg'
 </script>
-<header class="border-b-[1px] border-gray-800/25 h-[60px] bg-slate-100">
+<header class="border-b-[1px] border-gray-800/25 h-[60px]">
     <div class="nav-content mx-auto max-w-screen-xl flex flex-row items-center justify-between h-full">
         <!-- <div class="logo-wrap">
             <Logo></Logo>

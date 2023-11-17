@@ -12,7 +12,7 @@
 </script>
 
 <div class="rounded-3xl shadow-lg h-[224px] relative w-full {exampleString} mb-16 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group" >
-    <div class="info  bg-slate-50 p-2 px-4 rounded-lg absolute -bottom-[24px] mx-2 left-2 right-2 shadow-lg border-[1px] border-black/10 font-semibold flex flex-row items-center justify-between group-hover:translate-y-2 transition-all">
+    <div class="info bg-slate-900 p-2 px-4 rounded-lg absolute -bottom-[24px] mx-2 left-2 right-2 shadow-lg border-[1px] border-black/10 font-semibold flex flex-row items-center justify-between group-hover:translate-y-2 transition-all">
         <h5>
             {example.name.toUpperCase()}
         </h5>
