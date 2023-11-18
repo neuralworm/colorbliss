@@ -11,6 +11,7 @@
     onMount(()=>{
         mode = "default"
     })
+    let loadExample: any
 </script>
 
 <svelte:head>
@@ -44,10 +45,10 @@
         toggleMode={() => (mode = mode == "default" ? "custom" : "default")}
     /> -->
     {#if mode == "default"}
-        <DefaultColorGenerator bind:tailwindString={gradientString}  />
+        <DefaultColorGenerator bind:tailwindString={gradientString} bind:loadExampleIntoGenerator={loadExample}  />
     {/if}
     {#if mode == "custom"}
         <CustomColorGenerator />
     {/if}
-    <Examples />
+    <Examples {loadExample} />
 </main>

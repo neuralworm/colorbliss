@@ -35,7 +35,7 @@
     {/if}
     <div class="max-w-screen-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-auto mt-24 p-6">
         {#each favoritedExamples as fav}
-        <ExampleView example={fav}></ExampleView>
+        <ExampleView loadExample={null} example={fav}></ExampleView>
         {/each}
     </div>
 </section>

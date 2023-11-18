@@ -177,3 +177,14 @@ export const getBridgedColor = (colors: DefaultColor[], position: number): Defau
     } 
     return sorted[1]
 }
+
+export const parseExampleString = (string: string): DefaultColor => {
+    let arr = string.split('-')
+    const color: DefaultColor = {
+        color: arr[0],
+        step: parseInt(arr[1]),
+        position: 0,
+        opacity: 1
+    }
+    return color
+}

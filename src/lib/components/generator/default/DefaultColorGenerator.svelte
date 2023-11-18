@@ -4,6 +4,7 @@
         getBridgedColor,
         getSortedDefaultColors,
         getWidth,
+        parseExampleString,
     } from "$lib";
     import defaultColors, { specialColors } from "$lib/data/DefaultColors";
     import { defaultSteps } from "$lib/data/DefaultColors";
@@ -20,6 +21,7 @@
     import ColorSelect from "./ColorSelect.svelte";
     import Randomize from "./Randomize.svelte";
     import { onMount } from "svelte";
+    import type { Example } from "$lib/data/examples/Examples";
 
     const linearDirections: string[] = [
         "bg-gradient-to-r",
@@ -296,6 +298,18 @@
     let textMode: boolean = false;
     let textString: string = "TAILWINDCSS";
 
+    export const loadExampleIntoGenerator = (example: Example) => {
+        let colorOne: DefaultColor = parseExampleString(example.from)
+        let colorTwo: DefaultColor = parseExampleString(example.to)
+        let colorThree: DefaultColor|null = example.via ? parseExampleString(example.via) : null
+        colorOne.position = 0
+        colorTwo.position = 100
+        if(colorThree) colorThree.position = 50
+        colors = [colorOne, colorTwo]
+        if(colorThree) colors.push(colorThree)
+        toast.push(example.name + " loaded into generator.")
+
+    }
 
     onMount(()=>{
         cssString = getCSSBackgroundString()
