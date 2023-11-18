@@ -442,7 +442,7 @@
                         <select
                             name=""
                             id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-black/30"
                             bind:value={conicalDirection}
                         >
                             {#each conicalPositions as concialPosition}
@@ -462,7 +462,7 @@
                         <select
                             name=""
                             id=""
-                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-white"
+                            class="rounded-lg border-[2px] border-black/10 p-2 px-4 bg-black/30"
                             bind:value={radialDirection}
                         >
                             {#each radialPositions as radialPosition}
